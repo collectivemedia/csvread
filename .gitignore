@@ -8,7 +8,8 @@
 .Rdata
 
 # C++
-.o
-.obj
-.so
+*.o
+*.obj
+*.so
+
 

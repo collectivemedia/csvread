@@ -18,22 +18,13 @@ LazyLoad: \tab yes\cr
 }
 }
 \details{
-This package contains functions for fast loading CSV files,
-and convenient timing functions.
+This package contains functions for fast loading CSV files, and a basic int64 class.
 
 \code{\link{csvread}} is a CSV file loader that is much faster than the built-in read.csv,
 but needs column type specifications.
 
 See also \code{\link{int64}} for information about dealing with 64-bit integers when loading data from
 CSV files.
-
-\code{\link{cm.tic}} provides the timing functions \code{tic} and \code{toc} that can be nested.
-One can record all timings while a complex script is running, and examine the values later.
-
-A stack implemented as a vector (\code{\link{cm.stack}}) and as a list (\code{\link{cm.list}})
-with push, pop, first, last and clear operations are implemented.
-
-There are also a few other utilities listed under \code{link{cm.utils}}.
 }
 \author{
 Sergei Izrailev, Jeremy Stanley

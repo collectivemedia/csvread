@@ -2,7 +2,7 @@
 #
 # Package csvread 
 #
-# int64 class - derived from Date class code, hence some code is disabled.
+# int64 class - not all numeric functionality is implemented.  
 # 
 # Sergei Izrailev, 2011-2014
 #-------------------------------------------------------------------------------
@@ -21,6 +21,20 @@
 # limitations under the License.
 #-------------------------------------------------------------------------------
 
+#' Create, coerce to or test for an int64 vector
+int64 <- function(length = 0)
+{
+   res <- double(length)
+   class(res) <- "int64"
+   return(res)
+}
+
+#-------------------------------------------------------------------------------
+
+is.int64 <- function(x) inherits(x, "int64")
+
+#-------------------------------------------------------------------------------
+
 as.int64 <- function(x, ...) UseMethod("as.int64")
 
 #-------------------------------------------------------------------------------
@@ -33,14 +47,23 @@ as.int64.character <- function(x, base=10L, ...)
 {
    base <- as.integer(base)
    if (base > 36 || base < 2) stop("Can't convert to int64: invalid base.")
-	return(.Call("charToInt64", x, base, PACKAGE="cmrutils"))
+	return(.Call("charToInt64", x, base, PACKAGE="csvread"))
 }
 
 #-------------------------------------------------------------------------------
 
 as.int64.numeric <- function(x, ...)
 {
-   return(.Call("doubleToInt64", as.double(x), PACKAGE="cmrutils"));
+   return(.Call("doubleToInt64", as.double(x), PACKAGE="csvread"));
+}
+
+#-------------------------------------------------------------------------------
+
+as.int64.NULL <- function(x, ...) 
+{
+   res <- double()
+   class(res) <- "int64"
+   return(res)
 }
 
 #-------------------------------------------------------------------------------
@@ -54,16 +77,16 @@ as.int64.default <- function(x, ...)
 
 #-------------------------------------------------------------------------------
 
-format.int64 <- function(x, na.encode=F, ...)
+format.int64 <- function(x, na.encode = FALSE, ...)
 {
    format(as.character(x), ...)
 }
 
 #-------------------------------------------------------------------------------
 
-print.int64 <- function(x, quote=F, ...)
+print.int64 <- function(x, quote = FALSE, ...)
 {
-	print(format(x), quote=quote, ...)
+	print(format(x), quote = quote, ...)
 	invisible(x)
 }
 
@@ -72,12 +95,12 @@ print.int64 <- function(x, quote=F, ...)
 `+.int64` <- function(e1, e2)
 {	
 	if (nargs() == 1) return(e1)
-	if(inherits(e1, "int64") && inherits(e2, "int64"))
+	if (inherits(e1, "int64") && inherits(e2, "int64"))
    {
-      return(.Call("addInt64Int64", e1, e2, PACKAGE="cmrutils"))
+      return(.Call("addInt64Int64", e1, e2, PACKAGE="csvread"))
    }
-	if (inherits(e1, "int64")) return(.Call("addInt64Int", e1, as.integer(e2), PACKAGE="cmrutils"))
-   if (inherits(e2, "int64")) return(.Call("addInt64Int", e2, as.integer(e1), PACKAGE="cmrutils"))
+	if (inherits(e1, "int64")) return(.Call("addInt64Int", e1, as.integer(e2), PACKAGE="csvread"))
+   if (inherits(e2, "int64")) return(.Call("addInt64Int", e2, as.integer(e1), PACKAGE="csvread"))
 }
 
 #-------------------------------------------------------------------------------
@@ -87,10 +110,10 @@ print.int64 <- function(x, quote=F, ...)
    if (nargs() == 1) return(-e1)
    if(inherits(e1, "int64") && inherits(e2, "int64"))
    {
-      return(.Call("subInt64Int64", e1, e2, PACKAGE="cmrutils"))
+      return(.Call("subInt64Int64", e1, e2, PACKAGE="csvread"))
    }
-   if (inherits(e1, "int64")) return(.Call("subInt64Int64", e1, as.int64(e2), PACKAGE="cmrutils"))
-   if (inherits(e2, "int64")) return(.Call("subInt64Int64", as.int64(e1), e2, PACKAGE="cmrutils"))
+   if (inherits(e1, "int64")) return(.Call("subInt64Int64", e1, as.int64(e2), PACKAGE="csvread"))
+   if (inherits(e2, "int64")) return(.Call("subInt64Int64", as.int64(e1), e2, PACKAGE="csvread"))
 }
 
 #-------------------------------------------------------------------------------
@@ -121,12 +144,6 @@ Math.int64 <- function (x, ...)
 Summary.int64 <- function (..., na.rm)
 {
    stop(.Generic, " not defined for int64 objects")
-   
-	ok <- switch(.Generic, max = , min = , range = TRUE, FALSE)
-	if (!ok) stop(.Generic, " not defined for Date objects")
-	val <- NextMethod(.Generic)
-	class(val) <- oldClass(list(...)[[1L]])
-	val
 }
 
 #-------------------------------------------------------------------------------
@@ -176,30 +193,30 @@ as.character.int64 <- function(x, base=NULL, ...)
       if (is.na(i)) base <- 10L
       else base <- as.integer(attr(x, "base"))
    }
-   if (base == 10L) return(.Call("int64ToChar", x, PACKAGE="cmrutils"))
+   if (base == 10L) return(.Call("int64ToChar", x, PACKAGE="csvread"))
    if (base != 16L) stop(paste("Can't convert int64 to character as base", base))
-   return(.Call("int64ToHex", x, PACKAGE="cmrutils"))
+   return(.Call("int64ToHex", x, PACKAGE="csvread"))
 }
 
 #-------------------------------------------------------------------------------
 
 as.double.int64 <- function(x, ...)
 {
-   return(.Call("int64ToDouble", x, PACKAGE="cmrutils"))
+   return(.Call("int64ToDouble", x, PACKAGE="csvread"))
 }
 
 #-------------------------------------------------------------------------------
 
 as.integer.int64 <- function(x, ...)
 {
-   return(.Call("int64ToInteger", x, PACKAGE="cmrutils"))
+   return(.Call("int64ToInteger", x, PACKAGE="csvread"))
 }
 
 #-------------------------------------------------------------------------------
 
 is.na.int64 <- function(x, ...)
 {
-   return(.Call("isInt64NA", x, PACKAGE="cmrutils"))
+   return(.Call("isInt64NA", x, PACKAGE="csvread"))
 }
 
 #-------------------------------------------------------------------------------
@@ -219,7 +236,6 @@ c.int64 <- function(..., recursive=FALSE)
 #-------------------------------------------------------------------------------
 
 mean.int64 <- function (x, ...) stop("mean not implemented for int64")
-#	structure(mean(unclass(x), ...), class = "Date")
 
 #-------------------------------------------------------------------------------
 
@@ -231,8 +247,6 @@ seq.int64 <- function(from, to, by, length.out=NULL, along.with=NULL, ...)
 {
    stop("seq is not implemented for int64")
 }
-
-# cut is not implemented
 
 #-------------------------------------------------------------------------------
 

@@ -8,7 +8,6 @@ using namespace std;
 
 #include <R.h>
 #include <Rinternals.h>
-//#include <Rmath.h>
 #include <errno.h>
 
 namespace cm
@@ -268,8 +267,8 @@ public:
          return false;
       }
 //      return m_data.push_back(*((double*) &u));
-      double d;
       // assume sizeof(double) >= sizeof(CMInt64)
+      double d;
       memcpy(&d, &u, sizeof(u));
       return m_data.push_back(d);
    }

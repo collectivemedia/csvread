@@ -266,6 +266,19 @@ SEXP readCSV(SEXP rschema)
          lst[i]->attach(VECTOR_ELT(rframe, i));
       }
       else
+      if (strcmp(CHAR(STRING_ELT(rcoltypes, i)), "integer64") == 0)
+      {
+         SET_VECTOR_ELT(rframe, i, allocVector(REALSXP, nrows));
+         lst[i] = new CMRDataCollectorLong(10);
+         lst[i]->attach(VECTOR_ELT(rframe, i));
+
+         SEXP cls;
+         PROTECT(cls = allocVector(STRSXP, 1));
+         SET_STRING_ELT(cls, 0, mkChar("integer64"));
+         classgets(VECTOR_ELT(rframe, i), cls);
+         UNPROTECT(1);
+      }
+      else
       if (strcmp(CHAR(STRING_ELT(rcoltypes, i)), "long") == 0)
       {
          SET_VECTOR_ELT(rframe, i, allocVector(REALSXP, nrows));

@@ -1,5 +1,6 @@
 #include <stdlib.h>
 #include <limits.h>
+#include <stdint.h>
 
 namespace cm
 {

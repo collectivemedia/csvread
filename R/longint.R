@@ -21,7 +21,16 @@
 # limitations under the License.
 #-------------------------------------------------------------------------------
 
-#' Create, coerce to or test for an int64 vector
+#' @name int64
+#' @title A very basic 64-bit integer class
+#' @aliases int64 as.int64 as.int64.default as.int64.factor as.int64.character 
+#'          as.int64.numeric as.int64.NULL [.int64 [[.int64 [<-.int64
+#' @param x Object to be coerced or tested
+#' @param length A non-negative integer specifying the desired length.  
+#'          Double values will be coerced to integer: supplying an argument of 
+#'          length other than one is an error.
+#' @param ... Further arguments passed to or from other methods.
+#' @seealso Ops.int64
 int64 <- function(length = 0)
 {
    res <- double(length)
@@ -31,6 +40,8 @@ int64 <- function(length = 0)
 
 #-------------------------------------------------------------------------------
 
+#' @rdname int64
+#' @export
 is.int64 <- function(x) inherits(x, "int64")
 
 #-------------------------------------------------------------------------------
@@ -39,35 +50,9 @@ as.int64 <- function(x, ...) UseMethod("as.int64")
 
 #-------------------------------------------------------------------------------
 
-as.int64.factor <- function(x, ...) as.int64(as.character(x), ...)
-
-#-------------------------------------------------------------------------------
-
-as.int64.character <- function(x, base=10L, ...)
-{
-   base <- as.integer(base)
-   if (base > 36 || base < 2) stop("Can't convert to int64: invalid base.")
-	return(.Call("charToInt64", x, base, PACKAGE="csvread"))
-}
-
-#-------------------------------------------------------------------------------
-
-as.int64.numeric <- function(x, ...)
-{
-   return(.Call("doubleToInt64", as.double(x), PACKAGE="csvread"));
-}
-
-#-------------------------------------------------------------------------------
-
-as.int64.NULL <- function(x, ...) 
-{
-   res <- double()
-   class(res) <- "int64"
-   return(res)
-}
-
-#-------------------------------------------------------------------------------
-
+#' @rdname int64
+#' @export
+#' @method as.int64 default
 as.int64.default <- function(x, ...)
 {
 	if(inherits(x, "int64")) return(x)
@@ -77,47 +62,83 @@ as.int64.default <- function(x, ...)
 
 #-------------------------------------------------------------------------------
 
-format.int64 <- function(x, na.encode = FALSE, ...)
+#' @rdname int64
+#' @export
+#' @method as.int64 factor
+as.int64.factor <- function(x, ...) as.int64(as.character(x), ...)
+
+#-------------------------------------------------------------------------------
+
+#' @rdname int64
+#' @export
+#' @method as.int64 character
+as.int64.character <- function(x, base=10L, ...)
+{
+   base <- as.integer(base)
+   if (base > 36 || base < 2) stop("Can't convert to int64: invalid base.")
+	return(.Call("charToInt64", x, base, PACKAGE="csvread"))
+}
+
+#-------------------------------------------------------------------------------
+
+#' @rdname int64
+#' @export
+#' @method as.int64 numeric
+as.int64.numeric <- function(x, ...)
+{
+   return(.Call("doubleToInt64", as.double(x), PACKAGE="csvread"));
+}
+
+#-------------------------------------------------------------------------------
+
+#' @rdname int64
+#' @export
+#' @method as.int64 NULL
+as.int64.NULL <- function(x, ...) 
+{
+   res <- double()
+   class(res) <- "int64"
+   return(res)
+}
+
+#-------------------------------------------------------------------------------
+
+#' @rdname int64
+#' @export
+#' @method format int64
+format.int64 <- function(x, ...)
 {
    format(as.character(x), ...)
 }
 
 #-------------------------------------------------------------------------------
 
-print.int64 <- function(x, quote = FALSE, ...)
+#' @rdname int64
+#' @export
+#' @method print int64
+print.int64 <- function(x, ...)
 {
-	print(format(x), quote = quote, ...)
+	print(format(x), ...)
 	invisible(x)
 }
 
 #-------------------------------------------------------------------------------
 
-`+.int64` <- function(e1, e2)
-{	
-	if (nargs() == 1) return(e1)
-	if (inherits(e1, "int64") && inherits(e2, "int64"))
-   {
-      return(.Call("addInt64Int64", e1, e2, PACKAGE="csvread"))
-   }
-	if (inherits(e1, "int64")) return(.Call("addInt64Int", e1, as.integer(e2), PACKAGE="csvread"))
-   if (inherits(e2, "int64")) return(.Call("addInt64Int", e2, as.integer(e1), PACKAGE="csvread"))
-}
-
-#-------------------------------------------------------------------------------
-
-`-.int64` <- function(e1, e2)
-{
-   if (nargs() == 1) return(-e1)
-   if(inherits(e1, "int64") && inherits(e2, "int64"))
-   {
-      return(.Call("subInt64Int64", e1, e2, PACKAGE="csvread"))
-   }
-   if (inherits(e1, "int64")) return(.Call("subInt64Int64", e1, as.int64(e2), PACKAGE="csvread"))
-   if (inherits(e2, "int64")) return(.Call("subInt64Int64", as.int64(e1), e2, PACKAGE="csvread"))
-}
-
-#-------------------------------------------------------------------------------
-
+#' Operators for the \code{int64} class.
+#' 
+#' Operators for the \code{int64} class: one of 
+#' \code{+}, \code{-}, \code{==}, \code{!=}, \code{<}, \code{<=}, \code{>} or \code{>=}.
+#' @rdname Ops.int64
+#' @aliases + - <
+#' @param e1 int64 object, character vector or numeric vector 
+#'        (character and numeric values are converted by \code{as.int64}).
+#' @param e2 int64 object, character vector or numeric vector 
+#'        (character and numeric values are converted by \code{as.int64}).
+#' @usage e1 + e2
+#' e1 - e2
+#' @seealso int64
+#' @export
+#' @method Ops int64
 Ops.int64 <- function(e1, e2)
 {
 	if (nargs() == 1)
@@ -136,14 +157,34 @@ Ops.int64 <- function(e1, e2)
 
 #-------------------------------------------------------------------------------
 
-Math.int64 <- function (x, ...)
-	stop(.Generic, " not defined for int64 objects")
+#' @rdname Ops.int64
+#' @export
+#' @method + int64
+`+.int64` <- function(e1, e2)
+{	
+	if (nargs() == 1) return(e1)
+	if (inherits(e1, "int64") && inherits(e2, "int64"))
+   {
+      return(.Call("addInt64Int64", e1, e2, PACKAGE="csvread"))
+   }
+	if (inherits(e1, "int64")) return(.Call("addInt64Int", e1, as.integer(e2), PACKAGE="csvread"))
+   if (inherits(e2, "int64")) return(.Call("addInt64Int", e2, as.integer(e1), PACKAGE="csvread"))
+}
 
 #-------------------------------------------------------------------------------
 
-Summary.int64 <- function (..., na.rm)
+#' @rdname Ops.int64
+#' @export
+#' @method - int64
+`-.int64` <- function(e1, e2)
 {
-   stop(.Generic, " not defined for int64 objects")
+   if (nargs() == 1) return(-e1)
+   if(inherits(e1, "int64") && inherits(e2, "int64"))
+   {
+      return(.Call("subInt64Int64", e1, e2, PACKAGE="csvread"))
+   }
+   if (inherits(e1, "int64")) return(.Call("subInt64Int64", e1, as.int64(e2), PACKAGE="csvread"))
+   if (inherits(e2, "int64")) return(.Call("subInt64Int64", as.int64(e1), e2, PACKAGE="csvread"))
 }
 
 #-------------------------------------------------------------------------------
@@ -172,7 +213,7 @@ Summary.int64 <- function (..., na.rm)
 
 `[<-.int64` <- function(x, ..., value)
 {
-	if(!length(value)) return(x)
+	if (!length(value)) return(x)
 	value <- unclass(as.int64(value))
 	cl <- oldClass(x)
 	class(x) <- NULL
@@ -183,8 +224,11 @@ Summary.int64 <- function (..., na.rm)
 
 #-------------------------------------------------------------------------------
 
-#as.character.int64 <- function(x, ...) format(x, ...)
-as.character.int64 <- function(x, base=NULL, ...)
+#' @rdname int64
+#' @export
+#' @param base Specifies the base of the number (default is the base attribute of the object).
+#' @method as.character int64
+as.character.int64 <- function(x, base = NULL, ...)
 {
    if (is.null(base))
    {
@@ -200,6 +244,9 @@ as.character.int64 <- function(x, base=NULL, ...)
 
 #-------------------------------------------------------------------------------
 
+#' @rdname int64
+#' @export
+#' @method as.double int64
 as.double.int64 <- function(x, ...)
 {
    return(.Call("int64ToDouble", x, PACKAGE="csvread"))
@@ -207,6 +254,9 @@ as.double.int64 <- function(x, ...)
 
 #-------------------------------------------------------------------------------
 
+#' @rdname int64
+#' @export
+#' @method as.integer int64
 as.integer.int64 <- function(x, ...)
 {
    return(.Call("int64ToInteger", x, PACKAGE="csvread"))
@@ -214,6 +264,9 @@ as.integer.int64 <- function(x, ...)
 
 #-------------------------------------------------------------------------------
 
+#' @rdname int64
+#' @export
+#' @method is.na int64
 is.na.int64 <- function(x, ...)
 {
    return(.Call("isInt64NA", x, PACKAGE="csvread"))
@@ -221,43 +274,39 @@ is.na.int64 <- function(x, ...)
 
 #-------------------------------------------------------------------------------
 
-as.data.frame.int64 <- as.data.frame.vector
+# \code{as.data.frame.int64} functions the same as \code{as.data.frame.vector}.
+# @param x Object to be coerced or tested
+# @param ... Further arguments passed to or from other methods.
+# @param row.names \code{NULL} or a character vector giving the row names for the
+#           data frame.  Missing values are not allowed.
+# @param optional logical. If \code{TRUE}, setting row names and converting column
+#           names (to syntactic names: see \code{make.names}) is optional.
+#' @rdname int64
+#' @export
+#' @method as.data.frame int64
+as.data.frame.int64 <- function(x, ...) as.data.frame.vector(x, ...)
 
 #-------------------------------------------------------------------------------
 
+#' @rdname int64
+#' @export
+#' @method as.list int64
 as.list.int64 <- function(x, ...)
 	lapply(seq_along(x), function(i) x[i])
 
 #-------------------------------------------------------------------------------
 
-c.int64 <- function(..., recursive=FALSE)
+#' @rdname int64
+#' @export
+#' @method c int64
+c.int64 <- function(...)
 	structure(c(unlist(lapply(list(...), unclass))), class="int64")
 
 #-------------------------------------------------------------------------------
 
-mean.int64 <- function (x, ...) stop("mean not implemented for int64")
-
-#-------------------------------------------------------------------------------
-
-sum.int64 <- function(x, ...) stop("sum not implemented for int64")
-
-#-------------------------------------------------------------------------------
-
-seq.int64 <- function(from, to, by, length.out=NULL, along.with=NULL, ...)
-{
-   stop("seq is not implemented for int64")
-}
-
-#-------------------------------------------------------------------------------
-
-rep.int64 <- function(x, ...)
-{
-	y <- NextMethod()
-	structure(y, class="int64")
-}
-
-#-------------------------------------------------------------------------------
-
+#' @rdname int64
+#' @export
+#' @method is.numeric int64
 is.numeric.int64 <- function(x) FALSE
 
 #-------------------------------------------------------------------------------

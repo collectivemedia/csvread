@@ -21,22 +21,17 @@
 # limitations under the License.
 #-------------------------------------------------------------------------------
 
-# TO GENERATE DOCS:
-# # in directory above csvread
-# # remove contents of csvread.rox/docs to prevent weird errors 
-# library(roxygen)
-# roxygenize("csvread", "csvread.rox", copy.package=F, unlink.target=T, use.Rd2=T)
-# roxygenize(package.dir="csvread", roxygen.dir="csvread.rox")
-# To view output: R CMD Rdconv -t txt csvread/man/cm.read.nz.rd 
-# To generate PDF: R CMD Rd2pdf -o csvread.pdf csvread
-
-#-------------------------------------------------------------------------------
-
-# dyn.load("cmrlib.so")
-
-#' Given a list of the column types, parses the CSV file and returns a data frame.
-#' The first step is counting the number of lines in the file, which can be avoided
-#' if the number of rows is known by providing the \code{nrows} argument. 
+#' Given a list of the column types, function \code{csvread} parses the CSV file 
+#' and returns a data frame.  
+#' 
+#' \code{csvread} provides functionality for loading large (10M+ lines) CSV
+#' and other delimited files, similar to \code{read.csv}, but typically faster
+#' than the standard R loader. While not entirely general, it covers many
+#' common use cases when the types of columns in the CSV file are known
+#' in advance. In addition, the package provides a class 'int64', which
+#' represents 64-bit integers exactly when reading from a file.
+#' The latter is useful when working with 64-bit integer identifiers
+#' exported from databases.
 #' 
 #' If number of columns, which is inferred from the number of provided \code{coltypes}, is greater than
 #' the actual number of columns, the extra columns are still created. If the number of columns is
@@ -44,6 +39,9 @@
 #' Commas included in double quotes will be considered part of the field, rather than a separator, but
 #' double quotes will NOT be stripped. Runaway double quotes will end at the end of the line.
 #'
+#' See also \code{\link{int64}} for information about dealing with 64-bit 
+#' integers when loading data from CSV files. 
+#' 
 #' @param file Path to the CSV file.
 #' @param coltypes A vector of column types, e.g., \code{c("integer", "string")}. 
 #'        The accepted types are "integer", "double", "string", "long" and "longhex".
@@ -56,6 +54,8 @@
 #' \item \code{longhex} - the column is interpreted as the hex representation of a 64-bit
 #'              integer, stored as a double and assigned the \code{\link{int64}} class 
 #'              with an additional attribute \code{base = 16L} that is used for printing.             
+#' \item \code{integer64} - same as \code{long} but produces a column of class \code{integer64},
+#'          which should be compatible with package \code{bit64} (untested).
 #' \item \code{verbose} - if \code{TRUE}, the function prints number of lines counted in the file.
 #' \item \code{delimiter} - a single character delimiter, defalut is \code{","}.
 #' } 
@@ -73,13 +73,13 @@
 #' @return A data frame containing the data from the CSV file.
 #' @examples
 #' \dontrun{
-#'    frm <- cm.read.csv(file="myfile.csv", 
+#'    frm <- csvread(file="10lines.csv", 
 #'           coltypes=c("integer", "longhex", "double", "string", "long"), 
 #'           header=F, nrows=10)
 #' }
-#' @name cm.read.csv
+#' @name csvread
 #' @title Fast CSV reader with a given set of column types.
-#' @seealso \code{\link{int64}} \code{\link{utils::read.csv}}
+#' @seealso \code{\link{int64}} 
 #' @keywords csv comma-separated import text
 csvread <- function(file, coltypes, header, colnames = NULL, nrows = NULL, verbose=F, delimiter=",")
 {

@@ -20,35 +20,25 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #-------------------------------------------------------------------------------
-#' Various R utilities, some having to do with loading CSV files, Netezza access, timing.
-#' \tabular{ll}{
-#' Package: \tab csvread\cr
-#' Type: \tab Package\cr
-#' Version: \tab 3.5\cr
-#' Date: \tab 2014-05-31\cr
-#' License: \tab Apache License, Version 2.0\cr
-#' Author: \tab Sergei Izrailev, Jeremy Stanley\cr
-#' Maintainer: \tab Sergei Izrailev <sizrailev@@collective.com>\cr
-#' LazyLoad: \tab yes\cr
-#' }
-#'
-#' This package contains functions for fast loading CSV files, and a basic int64 class.
-#' 
-#' \code{\link{csvread}} is a CSV file loader that is much faster than the built-in read.csv, 
-#' but needs column type specifications.
-#' 
-#' See also \code{\link{int64}} for information about dealing with 64-bit integers when loading data from 
-#' CSV files. 
+#' Package \code{csvread} contains a fast CSV and other delimited file loader, 
+#' and a basic 64-bit integer class to aid in reading 64-bit integer values.
 #' 
 #' @name csvread
 #' @aliases csvread
 #' @docType package
-#' @title Utilities for fast load of CSV files and timing. 
-#' @author Sergei Izrailev, Jeremy Stanley
-#' @keywords csv timing profiling bigint 64-bit
+#' @title Fast CSV and other delimited file loader. 
+#' @author Sergei Izrailev
+#' @section Maintainer: Sergei Izrailev 
+#' @section Copyright: Copyright (C) Collective, Inc.
+#' @section License: Apache License, Version 2.0, 
+#'    available at http://www.apache.org/licenses/LICENSE-2.0
+#' @section URL: http://github.com/collectivemedia/csvread
+#' @section Installation from github: 
+#' \code{devtools::install_github("collectivemedia/csvread")}
+#' @keywords csv delimited file read.csv bigint 64-bit integer64
 #' @useDynLib csvread
 #' @exportPattern "*"
-#' @import methods tictoc
+#' @import methods
 #' 
 # The next and last line should be the word 'NULL'.
 NULL

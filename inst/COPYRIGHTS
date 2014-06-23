@@ -6,6 +6,7 @@ Copyright (C) 2011-2014 Collective, Inc.
 
 Files SfiDelimitedRecordSTD.h and SfiVectorLite.h come from 
 https://github.com/jabiru/sficl under the following license:
+
 The MIT License (MIT)
 
 Copyright (c) 2007-2014 Jabiru Ventures LLC

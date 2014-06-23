@@ -3,35 +3,117 @@
 \name{csvread}
 \alias{csvread}
 \alias{csvread-package}
-\title{Utilities for fast load of CSV files and timing.}
-\description{
-Various R utilities, some having to do with loading CSV files, Netezza access, timing.
-\tabular{ll}{
-Package: \tab csvread\cr
-Type: \tab Package\cr
-Version: \tab 3.5\cr
-Date: \tab 2014-05-31\cr
-License: \tab Apache License, Version 2.0\cr
-Author: \tab Sergei Izrailev, Jeremy Stanley\cr
-Maintainer: \tab Sergei Izrailev <sizrailev@collective.com>\cr
-LazyLoad: \tab yes\cr
+\title{Fast CSV and other delimited file loader.}
+\usage{
+csvread(file, coltypes, header, colnames = NULL, nrows = NULL,
+  verbose = F, delimiter = ",")
 }
+\arguments{
+\item{file}{Path to the CSV file.}
+
+\item{coltypes}{A vector of column types, e.g., \code{c("integer", "string")}.
+       The accepted types are "integer", "double", "string", "long" and "longhex".
+\itemize{
+\item \code{integer} - the column is parsed into an R integer type (32 bit)
+\item \code{double} - the column is parsed into an R double type
+\item \code{string} - the column is loaded as character type
+\item \code{long} - the column is interpreted as the decimal representation of a 64-bit
+             integer, stored as a double and assigned the \code{\link{int64}} class.
+\item \code{longhex} - the column is interpreted as the hex representation of a 64-bit
+             integer, stored as a double and assigned the \code{\link{int64}} class
+             with an additional attribute \code{base = 16L} that is used for printing.
+\item \code{integer64} - same as \code{long} but produces a column of class \code{integer64},
+         which should be compatible with package \code{bit64} (untested).
+\item \code{verbose} - if \code{TRUE}, the function prints number of lines counted in the file.
+\item \code{delimiter} - a single character delimiter, defalut is \code{","}.
+}}
+
+\item{header}{TRUE (default) or FALSE; indicates whether the file has a header
+and serves as the source of column names if \code{colnames} is not provided.}
+
+\item{colnames}{Optional column names for the resulting data frame. Overrides the header, if header is present.
+If NULL, then the column names are taken from the header, or, if there is no header,
+the column names are set to 'COL1', 'COL2', etc.}
+
+\item{nrows}{If NULL, the function first counts the lines in the file. This step can be avoided if the number
+of lines is known by providing a value to \code{nrows}. On the other hand, \code{nrows} can be
+used to read only the first lines of the CSV file.}
+
+\item{verbose}{If \code{TRUE}, the function prints number of lines counted in the file.}
+
+\item{delimiter}{A single character delimiter, defalut is \code{","}.}
+}
+\value{
+A data frame containing the data from the CSV file.
+}
+\description{
+Package \code{csvread} contains a fast CSV and other delimited file loader,
+and a basic 64-bit integer class to aid in reading 64-bit integer values.
+
+Given a list of the column types, function \code{csvread} parses the CSV file
+and returns a data frame.
 }
 \details{
-This package contains functions for fast loading CSV files, and a basic int64 class.
+\code{csvread} provides functionality for loading large (10M+ lines) CSV
+and other delimited files, similar to \code{read.csv}, but typically faster
+than the standard R loader. While not entirely general, it covers many
+common use cases when the types of columns in the CSV file are known
+in advance. In addition, the package provides a class 'int64', which
+represents 64-bit integers exactly when reading from a file.
+The latter is useful when working with 64-bit integer identifiers
+exported from databases.
 
-\code{\link{csvread}} is a CSV file loader that is much faster than the built-in read.csv,
-but needs column type specifications.
+If number of columns, which is inferred from the number of provided \code{coltypes}, is greater than
+the actual number of columns, the extra columns are still created. If the number of columns is
+less than the actual number of columns in the file, the extra columns in the file are ignored.
+Commas included in double quotes will be considered part of the field, rather than a separator, but
+double quotes will NOT be stripped. Runaway double quotes will end at the end of the line.
 
-See also \code{\link{int64}} for information about dealing with 64-bit integers when loading data from
-CSV files.
+See also \code{\link{int64}} for information about dealing with 64-bit
+integers when loading data from CSV files.
+}
+\section{Maintainer}{
+ Sergei Izrailev
+}
+
+\section{Copyright}{
+ Copyright (C) Collective, Inc.
+}
+
+\section{License}{
+ Apache License, Version 2.0,
+   available at http://www.apache.org/licenses/LICENSE-2.0
+}
+
+\section{URL}{
+ http://github.com/collectivemedia/csvread
+}
+
+\section{Installation from github}{
+
+\code{devtools::install_github("collectivemedia/csvread")}
+}
+\examples{
+\dontrun{
+   frm <- csvread(file="10lines.csv",
+          coltypes=c("integer", "longhex", "double", "string", "long"),
+          header=F, nrows=10)
+}
 }
 \author{
-Sergei Izrailev, Jeremy Stanley
+Sergei Izrailev
+}
+\seealso{
+\code{\link{int64}}
 }
 \keyword{64-bit}
 \keyword{bigint}
+\keyword{comma-separated}
 \keyword{csv}
-\keyword{profiling}
-\keyword{timing}
+\keyword{delimited}
+\keyword{file}
+\keyword{import}
+\keyword{integer64}
+\keyword{read.csv}
+\keyword{text}
 

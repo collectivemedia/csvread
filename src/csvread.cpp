@@ -57,6 +57,8 @@ template<typename T> T cmMax(T a, T b) { return a > b ? a : b; }
 
 */
 
+// df <- csvread("inst/10rows.csv", coltypes=c("longhex", "string", "double", "integer", "long"), header = FALSE, nrows = 10)
+
 //-----------------------------------------------------------------------------
 
 using namespace cm;

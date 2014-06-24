@@ -21,7 +21,7 @@
 \alias{is.na.int64}
 \alias{is.numeric.int64}
 \alias{print.int64}
-\title{A very basic 64-bit integer class}
+\title{A very basic 64-bit integer class.}
 \usage{
 int64(length = 0)
 
@@ -69,9 +69,16 @@ length other than one is an error.}
 \item{base}{Specifies the base of the number (default is the base attribute of the object).}
 }
 \description{
-A very basic 64-bit integer class
+A very basic 64-bit integer class.
+}
+\details{
+The \code{int64} class stores 64-bit integers in vectors of doubles and the
+base as an attribute \code{base} of the vector for printing and conversion to
+character. The motivation behind this class is to give R the ability to load
+64-bit integers directly, for example, to represent the commonly used 64-bit
+identifiers in relational and other databases.
 }
 \seealso{
-Ops.int64
+Ops.int64 csvread
 }
 

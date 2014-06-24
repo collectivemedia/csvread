@@ -21,8 +21,15 @@
 # limitations under the License.
 #-------------------------------------------------------------------------------
 
+#' A very basic 64-bit integer class. 
+#' 
+#' The \code{int64} class stores 64-bit integers in vectors of doubles and the 
+#' base as an attribute \code{base} of the vector for printing and conversion to
+#' character. The motivation behind this class is to give R the ability to load
+#' 64-bit integers directly, for example, to represent the commonly used 64-bit
+#' identifiers in relational and other databases.
 #' @name int64
-#' @title A very basic 64-bit integer class
+#' @title A very basic 64-bit integer class. 
 #' @aliases int64 as.int64 as.int64.default as.int64.factor as.int64.character 
 #'          as.int64.numeric as.int64.NULL [.int64 [[.int64 [<-.int64
 #' @param x Object to be coerced or tested
@@ -30,7 +37,7 @@
 #'          Double values will be coerced to integer: supplying an argument of 
 #'          length other than one is an error.
 #' @param ... Further arguments passed to or from other methods.
-#' @seealso Ops.int64
+#' @seealso Ops.int64 csvread
 int64 <- function(length = 0)
 {
    res <- double(length)

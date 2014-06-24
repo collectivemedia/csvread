@@ -3,10 +3,13 @@
 \name{csvread}
 \alias{csvread}
 \alias{csvread-package}
+\alias{map.coltypes}
 \title{Fast CSV and other delimited file loader.}
 \usage{
 csvread(file, coltypes, header, colnames = NULL, nrows = NULL,
-  verbose = F, delimiter = ",")
+  verbose = FALSE, delimiter = ",")
+
+map.coltypes(file, header, nrows = 100, delimiter = ",")
 }
 \arguments{
 \item{file}{Path to the CSV file.}
@@ -39,7 +42,8 @@ the column names are set to 'COL1', 'COL2', etc.}
 of lines is known by providing a value to \code{nrows}. On the other hand, \code{nrows} can be
 used to read only the first lines of the CSV file.}
 
-\item{verbose}{If \code{TRUE}, the function prints number of lines counted in the file.}
+\item{verbose}{If \code{TRUE} and \code{nrows} is \code{NULL}, the function prints
+number of lines counted in the file.}
 
 \item{delimiter}{A single character delimiter, defalut is \code{","}.}
 }
@@ -52,6 +56,10 @@ and a basic 64-bit integer class to aid in reading 64-bit integer values.
 
 Given a list of the column types, function \code{csvread} parses the CSV file
 and returns a data frame.
+
+\code{map.coltypes} guesses the column types in the CSV file by reading the first
+\code{nrows} lines. The result can be passed to \code{csvread} as the
+\code{coltypes} argument.
 }
 \details{
 \code{csvread} provides functionality for loading large (10M+ lines) CSV
@@ -95,9 +103,75 @@ integers when loading data from CSV files.
 }
 \examples{
 \dontrun{
-   frm <- csvread(file="10lines.csv",
-          coltypes=c("integer", "longhex", "double", "string", "long"),
-          header=F, nrows=10)
+frm <- csvread("inst/10rows.csv",
+   coltypes = c("longhex", "string", "double", "integer", "long"),
+   header = FALSE, nrows = 10)
+frm
+#               COL1       COL2     COL3 COL4 COL5
+# 1  11fb89c1558c792 2011-05-06 0.150001 4970 4977
+# 2  11fb89c1558c792 2011-05-06 0.150001 4970 4987
+# 3  11fb89c1558c792 2011-05-06 0.150001 5200 5528
+# 4  11fb89c1558c792 2011-05-06 0.150001 4970 5004
+# 5  11fb89c1558c792 2011-05-06 0.150001 4970 4980
+# 6  11fb89c1558c792 2011-05-06 0.150001 4970 5020
+# 7  11fb89c1558c792 2011-05-06 0.150001 4970 5048
+# 8  11fb89c1558c792 2011-05-06 0.150001 4970 5035
+# 9  11fb89c1558c792 2011-05-06 0.150001 4970 4971
+# 10 11fb89c1558c792 2011-05-06 0.150001 4970 4973
+
+typeof(frm$COL1)
+# [1] "double"
+class(frm$COL1)
+# [1] "int64"
+
+typeof(frm$COL5)
+# [1] "double"
+class(frm$COL5)
+# [1] "int64"
+}
+\dontrun{
+coltypes <- map.coltypes("inst/10rows.csv", header = FALSE)
+coltypes
+#       V1        V2        V3        V4        V5
+# "string"  "string"  "double" "integer" "integer"
+
+frm <- csvread(file = "inst/10rows.csv", coltypes = coltypes, header = F, verbose = T)
+# Counted 10 lines.
+
+frm
+#               COL1       COL2     COL3 COL4 COL5
+# 1  11fb89c1558c792 2011-05-06 0.150001 4970 4977
+# 2  11fb89c1558c792 2011-05-06 0.150001 4970 4987
+# 3  11fb89c1558c792 2011-05-06 0.150001 5200 5528
+# 4  11fb89c1558c792 2011-05-06 0.150001 4970 5004
+# 5  11fb89c1558c792 2011-05-06 0.150001 4970 4980
+# 6  11fb89c1558c792 2011-05-06 0.150001 4970 5020
+# 7  11fb89c1558c792 2011-05-06 0.150001 4970 5048
+# 8  11fb89c1558c792 2011-05-06 0.150001 4970 5035
+# 9  11fb89c1558c792 2011-05-06 0.150001 4970 4971
+# 10 11fb89c1558c792 2011-05-06 0.150001 4970 4973
+typeof(frm$COL1)
+# [1] "character"
+class(frm$COL1)
+# [1] "character"
+
+typeof(frm$COL5)
+# [1] "integer"
+class(frm$COL5)
+# [1] "integer"
+
+frm$COL1 <- as.int64(frm$COL1, base = 16)
+frm$COL1
+# [1] "11fb89c1558c792" "11fb89c1558c792" "11fb89c1558c792" "11fb89c1558c792"
+# [5] "11fb89c1558c792" "11fb89c1558c792" "11fb89c1558c792" "11fb89c1558c792"
+# [9] "11fb89c1558c792" "11fb89c1558c792"
+typeof(frm$COL1)
+# [1] "double"
+class(frm$COL1)
+# [1] "int64"
+
+as.character.int64(frm$COL1[1], base = 10)
+# [1] "80986298828507026"
 }
 }
 \author{

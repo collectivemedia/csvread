@@ -67,21 +67,45 @@
 #' @param nrows If NULL, the function first counts the lines in the file. This step can be avoided if the number 
 #'        of lines is known by providing a value to \code{nrows}. On the other hand, \code{nrows} can be 
 #'        used to read only the first lines of the CSV file.
-#' @param verbose If \code{TRUE}, the function prints number of lines counted in the file.
+#' @param verbose If \code{TRUE} and \code{nrows} is \code{NULL}, the function prints 
+#'        number of lines counted in the file.
 #' @param delimiter A single character delimiter, defalut is \code{","}.
 #' 
 #' @return A data frame containing the data from the CSV file.
 #' @examples
 #' \dontrun{
-#'    frm <- csvread(file="10lines.csv", 
-#'           coltypes=c("integer", "longhex", "double", "string", "long"), 
-#'           header=F, nrows=10)
+#' frm <- csvread("inst/10rows.csv", 
+#'    coltypes = c("longhex", "string", "double", "integer", "long"), 
+#'    header = FALSE, nrows = 10)
+#' frm
+#' #               COL1       COL2     COL3 COL4 COL5
+#' # 1  11fb89c1558c792 2011-05-06 0.150001 4970 4977
+#' # 2  11fb89c1558c792 2011-05-06 0.150001 4970 4987
+#' # 3  11fb89c1558c792 2011-05-06 0.150001 5200 5528
+#' # 4  11fb89c1558c792 2011-05-06 0.150001 4970 5004
+#' # 5  11fb89c1558c792 2011-05-06 0.150001 4970 4980
+#' # 6  11fb89c1558c792 2011-05-06 0.150001 4970 5020
+#' # 7  11fb89c1558c792 2011-05-06 0.150001 4970 5048
+#' # 8  11fb89c1558c792 2011-05-06 0.150001 4970 5035
+#' # 9  11fb89c1558c792 2011-05-06 0.150001 4970 4971
+#' # 10 11fb89c1558c792 2011-05-06 0.150001 4970 4973
+#' 
+#' typeof(frm$COL1)
+#' # [1] "double"
+#' class(frm$COL1)
+#' # [1] "int64"
+#' 
+#' typeof(frm$COL5)
+#' # [1] "double"
+#' class(frm$COL5)
+#' # [1] "int64"
 #' }
 #' @name csvread
 #' @title Fast CSV reader with a given set of column types.
 #' @seealso \code{\link{int64}} 
 #' @keywords csv comma-separated import text
-csvread <- function(file, coltypes, header, colnames = NULL, nrows = NULL, verbose=F, delimiter=",")
+csvread <- function(file, coltypes, header, colnames = NULL, nrows = NULL, 
+      verbose = FALSE, delimiter = ",")
 {
    if (!is.null(nrows)) nrows <- as.double(nrows)
    return(.Call("readCSV", list(filename=file, coltypes=coltypes, nrows=nrows, header=header, 
@@ -90,3 +114,63 @@ csvread <- function(file, coltypes, header, colnames = NULL, nrows = NULL, verbo
 
 #------------------------------------------------------------------------------
 
+#' \code{map.coltypes} guesses the column types in the CSV file by reading the first
+#' \code{nrows} lines. The result can be passed to \code{csvread} as the 
+#' \code{coltypes} argument.
+#' 
+#' @rdname csvread
+#' @examples
+#' \dontrun{
+#' coltypes <- map.coltypes("inst/10rows.csv", header = FALSE)
+#' coltypes
+#' #       V1        V2        V3        V4        V5 
+#' # "string"  "string"  "double" "integer" "integer"  
+#' 
+#' frm <- csvread(file = "inst/10rows.csv", coltypes = coltypes, header = F, verbose = T)
+#' # Counted 10 lines.
+#' 
+#' frm
+#' #               COL1       COL2     COL3 COL4 COL5
+#' # 1  11fb89c1558c792 2011-05-06 0.150001 4970 4977
+#' # 2  11fb89c1558c792 2011-05-06 0.150001 4970 4987
+#' # 3  11fb89c1558c792 2011-05-06 0.150001 5200 5528
+#' # 4  11fb89c1558c792 2011-05-06 0.150001 4970 5004
+#' # 5  11fb89c1558c792 2011-05-06 0.150001 4970 4980
+#' # 6  11fb89c1558c792 2011-05-06 0.150001 4970 5020
+#' # 7  11fb89c1558c792 2011-05-06 0.150001 4970 5048
+#' # 8  11fb89c1558c792 2011-05-06 0.150001 4970 5035
+#' # 9  11fb89c1558c792 2011-05-06 0.150001 4970 4971
+#' # 10 11fb89c1558c792 2011-05-06 0.150001 4970 4973
+#' typeof(frm$COL1)
+#' # [1] "character"
+#' class(frm$COL1)
+#' # [1] "character"
+#' 
+#' typeof(frm$COL5)
+#' # [1] "integer"
+#' class(frm$COL5)
+#' # [1] "integer"
+#' 
+#' frm$COL1 <- as.int64(frm$COL1, base = 16)
+#' frm$COL1
+#' # [1] "11fb89c1558c792" "11fb89c1558c792" "11fb89c1558c792" "11fb89c1558c792"
+#' # [5] "11fb89c1558c792" "11fb89c1558c792" "11fb89c1558c792" "11fb89c1558c792"
+#' # [9] "11fb89c1558c792" "11fb89c1558c792"
+#' typeof(frm$COL1)
+#' # [1] "double"
+#' class(frm$COL1)
+#' # [1] "int64"
+#' 
+#' as.character.int64(frm$COL1[1], base = 10)
+#' # [1] "80986298828507026"
+#' }
+map.coltypes <- function(file, header, nrows = 100, delimiter = ",")
+{
+   df <- read.csv(file, stringsAsFactors  = FALSE, header = header, sep = delimiter, nrows = nrows)
+   coltypes <- unlist(lapply(df, function(x) typeof(x)))
+   coltypes[coltypes == "logical"] <- "integer"
+   coltypes[coltypes == "character"] <- "string"
+   return(coltypes)
+}
+
+#------------------------------------------------------------------------------

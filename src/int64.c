@@ -21,9 +21,10 @@
 // limitations under the License.
 //-------------------------------------------------------------------------------
 
-using namespace std;
+//using namespace std;
 
 #include "int64.h"
+#include "stdio.h"
 
 #include <R.h>
 #include <Rinternals.h>
@@ -32,8 +33,8 @@ using namespace std;
 
 //-----------------------------------------------------------------------------
 
-namespace cm
-{
+//namespace cm
+//{
 
 // from http://stackoverflow.com/questions/18858115/c-long-long-to-char-conversion-function-in-embedded-system
 static char* cm_lltoa(CMInt64 val, char* buf, int base)
@@ -64,15 +65,15 @@ static char* cm_lltoa(CMInt64 val, char* buf, int base)
     return &buf[i+1];
 }
 
-}
+//}
 
 //-----------------------------------------------------------------------------
 
-using namespace cm;
+//using namespace cm;
 
 
-extern "C"
-{
+//extern "C"
+//{
 //-----------------------------------------------------------------------------
 
 /// Converts the string representation of long integers in base to CMInt64,
@@ -152,9 +153,8 @@ SEXP int64ToChar(SEXP rinp)
       }
       else
       {
-//         sprintf(s, "%lld", x[i]);
-         cm::cm_lltoa(xi, s, 10);
-         SET_STRING_ELT(res, i, mkChar(s));
+//         sprintf(s, "%lld", xi);
+         SET_STRING_ELT(res, i, mkChar(cm_lltoa(xi, s, 10)));
       }
    }
 
@@ -185,9 +185,8 @@ SEXP int64ToHex(SEXP rinp)
       else
       {
          if (xi < 0) error("Can't convert a negative number %lld to hex format, item %d.", x[i], i + 1);
-         //sprintf(s, "%llx", xi);
-         cm::cm_lltoa(xi, s, 16);
-         SET_STRING_ELT(res, i, mkChar(s));
+//         sprintf(s, "%llx", xi);
+         SET_STRING_ELT(res, i, mkChar(cm_lltoa(xi, s, 16)));
       }
    }
 
@@ -478,4 +477,4 @@ SEXP subInt64Int64(SEXP r1, SEXP r2)
 
 //-----------------------------------------------------------------------------
 
-}
+//}

@@ -64,7 +64,7 @@ and returns a data frame.
 \details{
 \code{csvread} provides functionality for loading large (10M+ lines) CSV
 and other delimited files, similar to \code{read.csv}, but typically faster
-than the standard R loader. While not entirely general, it covers many
+and using less memory than the standard R loader. While not entirely general, it covers many
 common use cases when the types of columns in the CSV file are known
 in advance. In addition, the package provides a class 'int64', which
 represents 64-bit integers exactly when reading from a file.

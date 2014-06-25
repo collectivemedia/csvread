@@ -25,13 +25,15 @@
 #' and returns a data frame.  
 #' 
 #' \code{csvread} provides functionality for loading large (10M+ lines) CSV
-#' and other delimited files, similar to \code{read.csv}, but typically faster
-#' and using less memory than the standard R loader. While not entirely general, it covers many
-#' common use cases when the types of columns in the CSV file are known
-#' in advance. In addition, the package provides a class 'int64', which
-#' represents 64-bit integers exactly when reading from a file.
-#' The latter is useful when working with 64-bit integer identifiers
-#' exported from databases.
+#' and other delimited files, similar to read.csv, but typically faster and
+#' using less memory than the standard R loader. While not entirely general,
+#' it covers many common use cases when the types of columns in the CSV file
+#' are known in advance. In addition, the package provides a class 'int64',
+#' which represents 64-bit integers exactly when reading from a file. The
+#' latter is useful when working with 64-bit integer identifiers exported from
+#' databases. The CSV file loader supports common column types including 
+#' \code{integer}, \code{double}, \code{string}, and \code{int64}, leaving 
+#' further type transformations  to the user. 
 #' 
 #' If number of columns, which is inferred from the number of provided \code{coltypes}, is greater than
 #' the actual number of columns, the extra columns are still created. If the number of columns is

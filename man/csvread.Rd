@@ -4,7 +4,7 @@
 \alias{csvread}
 \alias{csvread-package}
 \alias{map.coltypes}
-\title{Fast CSV and other delimited file loader.}
+\title{Fast Specialized CSV File Loader.}
 \usage{
 csvread(file, coltypes, header, colnames = NULL, nrows = NULL,
   verbose = FALSE, delimiter = ",")
@@ -51,8 +51,9 @@ number of lines counted in the file.}
 A data frame containing the data from the CSV file.
 }
 \description{
-Package \code{csvread} contains a fast CSV and other delimited file loader,
-and a basic 64-bit integer class to aid in reading 64-bit integer values.
+Package \code{csvread} contains a fast specialized CSV and other delimited
+file loader, and a basic 64-bit integer class to aid in reading 64-bit
+integer values.
 
 Given a list of the column types, function \code{csvread} parses the CSV file
 and returns a data frame.
@@ -63,13 +64,15 @@ and returns a data frame.
 }
 \details{
 \code{csvread} provides functionality for loading large (10M+ lines) CSV
-and other delimited files, similar to \code{read.csv}, but typically faster
-and using less memory than the standard R loader. While not entirely general, it covers many
-common use cases when the types of columns in the CSV file are known
-in advance. In addition, the package provides a class 'int64', which
-represents 64-bit integers exactly when reading from a file.
-The latter is useful when working with 64-bit integer identifiers
-exported from databases.
+and other delimited files, similar to read.csv, but typically faster and
+using less memory than the standard R loader. While not entirely general,
+it covers many common use cases when the types of columns in the CSV file
+are known in advance. In addition, the package provides a class 'int64',
+which represents 64-bit integers exactly when reading from a file. The
+latter is useful when working with 64-bit integer identifiers exported from
+databases. The CSV file loader supports common column types including
+\code{integer}, \code{double}, \code{string}, and \code{int64}, leaving
+further type transformations  to the user.
 
 If number of columns, which is inferred from the number of provided \code{coltypes}, is greater than
 the actual number of columns, the extra columns are still created. If the number of columns is

@@ -20,13 +20,14 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #-------------------------------------------------------------------------------
-#' Package \code{csvread} contains a fast CSV and other delimited file loader, 
-#' and a basic 64-bit integer class to aid in reading 64-bit integer values.
+#' Package \code{csvread} contains a fast specialized CSV and other delimited 
+#' file loader, and a basic 64-bit integer class to aid in reading 64-bit 
+#' integer values.
 #' 
 #' @name csvread
 #' @aliases csvread
 #' @docType package
-#' @title Fast CSV and other delimited file loader. 
+#' @title Fast Specialized CSV File Loader. 
 #' @author Sergei Izrailev
 #' @section Maintainer: Sergei Izrailev 
 #' @section Copyright: Copyright (C) Collective, Inc.

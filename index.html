@@ -1,6 +1,6 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html lang="en-US">
-<head><title>R: Package csvread. Fast CSV reader for R</title>
+<head><title>R: Package csvread. Fast Specialized CSV File Loader for R</title>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <link rel="stylesheet" type="text/css" href="R.css">
 <meta name="description" content="This package provides functions for loading large (10M+ lines) CSV
@@ -41,13 +41,15 @@ an implementation of a basic 64-bit integer class.
 <p>
 
 <code>csvread</code> provides functionality for loading large (10M+ lines) CSV
-and other delimited files, similar to <code>read.csv</code>, but typically faster
-and using less memory than the standard R loader. While not entirely general, it covers many
-common use cases when the types of columns in the CSV file are known
-in advance. In addition, the package provides a class <code>int64</code>, which
-represents 64-bit integers exactly when reading from a file.
-The latter is useful when working with 64-bit integer identifiers
-exported from databases.
+    and other delimited files, similar to <code>read.csv</code>, but typically faster and
+    using less memory than the standard R loader. While not entirely general,
+    it covers many common use cases when the types of columns in the CSV file
+    are known in advance. In addition, the package provides a class <code>int64</code>,
+    which represents 64-bit integers exactly when reading from a file. The
+    latter is useful when working with 64-bit integer identifiers exported from
+    databases. The CSV file loader supports common column types including
+    <code>integer</code>, <code>double</code>, <code>string</code>,
+    and <code>int64</code>, leaving further type transformations to the user.
 </p>
 
 <h3>Benchmark</h3>

@@ -9,3 +9,5 @@ This R package provides functions for loading large (10M+ lines) CSV
     represents 64-bit integers exactly when reading from a file.
     The latter is useful when working with 64-bit integer identifiers
     exported from databases.
+
+See <a href="http://collectivemedia.github.io/csvread/">http://collectivemedia.github.io/csvread/</a> for more details.

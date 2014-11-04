@@ -21,6 +21,7 @@
 \alias{is.na.int64}
 \alias{is.numeric.int64}
 \alias{print.int64}
+\alias{rep.int64}
 \title{A very basic 64-bit integer class.}
 \usage{
 int64(length = 0)
@@ -56,6 +57,8 @@ is.int64(x)
 \method{c}{int64}(...)
 
 \method{is.numeric}{int64}(x)
+
+\method{rep}{int64}(x, ...)
 }
 \arguments{
 \item{x}{Object to be coerced or tested}

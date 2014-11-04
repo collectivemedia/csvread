@@ -1,6 +1,6 @@
 Package: csvread
 Title: Fast Specialized CSV File Loader.
-Version: 1.0
+Version: 1.1
 Author: Sergei Izrailev
 Maintainer: Sergei Izrailev <sizrailev@collective.com>
 Description: This package provides functions for loading large (10M+ lines) CSV

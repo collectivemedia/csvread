@@ -22,7 +22,6 @@
 //-------------------------------------------------------------------------------
 
 #include <stdlib.h>
-#include <limits.h>
 #include <stdint.h>
 
 //namespace cm
@@ -34,6 +33,9 @@ typedef int_fast64_t CMInt64;
 
 //static const union CMRLongNA { CMInt64 L; double D; } NA_LONG = { -9223372036854775807LL - 1LL };
 
-static const union CMRLongNA { CMInt64 L; double D; } NA_LONG = { LLONG_MIN };
+// csvread 1.1: Some undisclosed compiler in R check complains that this is using long long.
+// Changing to INT_FAST64_MIN in the hopes that it works, but with no way to test it.
+//static const union CMRLongNA { CMInt64 L; double D; } NA_LONG = { LLONG_MIN };
+static const union CMRLongNA { CMInt64 L; double D; } NA_LONG = { INT_FAST64_MIN };
 
 //}

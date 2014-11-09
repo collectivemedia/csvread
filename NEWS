@@ -1,2 +1,7 @@
+Version 1.1
+* Added int64.rep()
+* Switched to using INT_FAST64_MIN from LLONG_MIN
+* Reduced the required R version to 2.15
+
 Version 1.0
-First public release. 
+* First public release. 

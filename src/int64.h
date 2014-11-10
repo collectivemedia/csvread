@@ -36,6 +36,11 @@ typedef int_fast64_t CMInt64;
 // csvread 1.1: Some undisclosed compiler in R check complains that this is using long long.
 // Changing to INT_FAST64_MIN in the hopes that it works, but with no way to test it.
 //static const union CMRLongNA { CMInt64 L; double D; } NA_LONG = { LLONG_MIN };
+
+#ifdef INT_FAST64_MIN
 static const union CMRLongNA { CMInt64 L; double D; } NA_LONG = { INT_FAST64_MIN };
+#else
+static const union CMRLongNA { CMInt64 L; double D; } NA_LONG = { LLONG_MIN };
+#endif
 
 //}

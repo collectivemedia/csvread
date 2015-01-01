@@ -30,12 +30,12 @@
 #' @title Fast Specialized CSV File Loader. 
 #' @author Sergei Izrailev
 #' @section Maintainer: Sergei Izrailev 
-#' @section Copyright: Copyright (C) Collective, Inc.
+#' @section Copyright: Copyright (C) Collective, Inc.; with portions Copyright (C) Jabiru Ventures LLC
 #' @section License: Apache License, Version 2.0, 
 #'    available at http://www.apache.org/licenses/LICENSE-2.0
-#' @section URL: http://github.com/collectivemedia/csvread
+#' @section URL: http://github.com/jabiru/csvread
 #' @section Installation from github: 
-#' \code{devtools::install_github("collectivemedia/csvread")}
+#' \code{devtools::install_github("jabiru/csvread")}
 #' @keywords csv delimited file read.csv bigint 64-bit integer64
 #' @useDynLib csvread
 #' @exportPattern "*"

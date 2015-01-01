@@ -10,4 +10,4 @@ This R package provides functions for loading large (10M+ lines) CSV
     The latter is useful when working with 64-bit integer identifiers
     exported from databases.
 
-See <a href="http://collectivemedia.github.io/csvread/">http://collectivemedia.github.io/csvread/</a> for more details.
+See <a href="http://jabiru.github.io/csvread/">http://jabiru.github.io/csvread/</a> for more details.

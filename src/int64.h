@@ -40,6 +40,7 @@ typedef int_fast64_t CMInt64;
 #ifdef INT_FAST64_MIN
 static const union CMRLongNA { CMInt64 L; double D; } NA_LONG = { INT_FAST64_MIN };
 #else
+#include <limits.h>
 static const union CMRLongNA { CMInt64 L; double D; } NA_LONG = { LLONG_MIN };
 #endif
 

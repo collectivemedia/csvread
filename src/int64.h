@@ -37,11 +37,13 @@ typedef int_fast64_t CMInt64;
 // Changing to INT_FAST64_MIN in the hopes that it works, but with no way to test it.
 //static const union CMRLongNA { CMInt64 L; double D; } NA_LONG = { LLONG_MIN };
 
-#ifdef INT_FAST64_MIN
-static const union CMRLongNA { CMInt64 L; double D; } NA_LONG = { INT_FAST64_MIN };
-#else
-#include <limits.h>
-static const union CMRLongNA { CMInt64 L; double D; } NA_LONG = { LLONG_MIN };
-#endif
+//#ifdef INT_FAST64_MIN
+//static const union CMRLongNA { CMInt64 L; double D; } NA_LONG = { INT_FAST64_MIN };
+//#else
+//#include <limits.h>
+//static const union CMRLongNA { CMInt64 L; double D; } NA_LONG = { LLONG_MIN };
+//#endif
+
+static const union CMRLongNA { CMInt64 L; double D; } NA_LONG = { -0x7fffffffffffffff - 1 };
 
 //}

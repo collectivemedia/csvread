@@ -1,6 +1,6 @@
 Version 1.2
-* Strings NA, na, NULL, null and empty string now universally become NA. 
-  It should really be a na.strings parameter to csvread and include also "<NA>".
+* Added a na.strings argument to csvread() with default = c("NA", "na", "NULL", "null", "")
+  Note that empty string always becomes NA for non-strings. 
 * Fixed a bug in treating NAs (reset errno)
 * Fix to include <limits.h> where needed
 * Updated maintainer and copyright

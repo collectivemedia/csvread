@@ -117,6 +117,7 @@ SEXP numLines(SEXP filename)
 /// - colnames - column names for all columns; overrides header names when present
 /// - verbose  - flag indicating if progress messages should be printed.
 /// - delimiter - one-character delimiter (default is comma).
+/// - na.strings - (required) a vector of strings treated as NA; can include an empty string
 /// If number of columns, which is inferred from the number of provided coltypes, is greater than
 /// the actual number of columns, the extra columns are still created. If the number of columns is
 /// less than the actual number of columns in the file, the extra columns in the file are ignored.
@@ -134,6 +135,9 @@ SEXP readCSV(SEXP rschema)
 
    SEXP rcoltypes = getListElement(rschema, "coltypes");
    if (rcoltypes == R_NilValue || length(rcoltypes) == 0) error("c_readCSV: missing 'coltypes' in the argument list");
+
+   SEXP rnastrings = getListElement(rschema, "na.strings");
+   if (rnastrings == R_NilValue || length(rnastrings) == 0) error("c_readCSV: missing 'na.strings' in the argument list");
 
    SEXP rcolnames = getListElement(rschema, "colnames");
 
@@ -164,6 +168,15 @@ SEXP readCSV(SEXP rschema)
    }
 
    int ncols = length(rcoltypes);
+
+   // Get the na.strings
+
+   CMRNAStrings nastrings;
+   for (int i = 0, n = length(rnastrings); i < n; i++)
+   {
+      nastrings.add(CHAR(STRING_ELT(rnastrings, i)));
+   }
+
 
    // Before going any further, check if the file is readable.
 
@@ -237,7 +250,7 @@ SEXP readCSV(SEXP rschema)
       namecnt++;
    }
 
-   for (int i = 0, n = headers.size(); i < n && namecnt < ncols; i++)
+   for (int i = namecnt, n = headers.size(); i < n && namecnt < ncols; i++)
    {
       colnames.push_back(headers[i]);
       namecnt++;
@@ -341,18 +354,13 @@ SEXP readCSV(SEXP rschema)
    CMLineStream lstr(filename.c_str());
    char* s;
    if (hasHeader) s = lstr.getline();
-   //int ri = 0; // DEBUG
    while ((s = lstr.getline()))
    {
-      //ri++; // DEBUG
-      //Rprintf("row = %i -->%s\n", ri, s);   // DEBUG
       rec.split(s, lstr.len());
       for (int i = 0, nr = rec.size(); i < ncols; i++)
       {
-         //if (i >= nr) Rprintf("row=%i col=%i nr=%i Empty string\n", ri, i, nr); // DEBUG
-         //else Rprintf("row=%i col=%i nr=%i -->%s<--\n", ri, i, nr, rec.get(i)); // DEBUG
-         if (i >= nr) lst[i]->append("");
-         else lst[i]->append(rec.get(i));
+         if (i >= nr) lst[i]->append("", nastrings);
+         else lst[i]->append(rec.get(i), nastrings);
       }
     }
 

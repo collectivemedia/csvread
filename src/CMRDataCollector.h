@@ -36,6 +36,46 @@ using namespace std;
 namespace cm
 {
 
+class CMRNAStrings
+{
+protected:
+   /// Vector holding the strings to compare to.
+   vector<string> m_nastrings;
+   /// Vector holding the lengths of the strings in m_nastrings.
+   vector<int> m_lengths;
+   /// Flag indicating if empty string is treated as NA.
+   bool m_emptyIsNA;
+
+public:
+
+   CMRNAStrings() : m_emptyIsNA(false) {}
+   virtual ~CMRNAStrings() {}
+
+   /// Returns TRUE if s is considered an NA.
+   bool isNA(const char* s) const
+   {
+      if (s == 0) return true;
+      int len = strlen(s);
+      if (len == 0 && m_emptyIsNA) return true;
+      for (int i = 0, n = m_nastrings.size(); i < n; i++)
+      {
+         if (len == m_lengths[i] && m_nastrings[i] == s) return true;
+      }
+      return false;
+   }
+
+   /// Adds a string that should be considered an NA.
+   void add(const char* s)
+   {
+      if (s == 0) return;  // ignore null pointers (just a precaution).
+      int len = strlen(s);
+      m_nastrings.push_back(s);
+      m_lengths.push_back(len);
+      if (len == 0) m_emptyIsNA = true;
+   }
+
+};
+
 //-----------------------------------------------------------------------------
 //
 // CMRDataCollector - A base class for parsing and collecting vectors of data in R
@@ -50,7 +90,7 @@ public:
    virtual ~CMRDataCollector() {}
 
    /// Parse and append an element to the collection. Returns false if there was a parse error.
-   virtual bool append(const char* s) = 0;
+   virtual bool append(const char* s, const CMRNAStrings& nastrings) = 0;
    /// Returns the size of the collection.
    virtual int size() const = 0;
    /// Returns the storage capacity of the external storage.
@@ -88,16 +128,16 @@ public:
       m_data = rvec;
    }
 
-   /// Parse and append an element to the collection. Returns false if there was a parse error.
-   virtual bool append(const char* s)
+   /// Parse and append an element to the collection. Returns false if there was an NA.
+   virtual bool append(const char* s, const CMRNAStrings& nastrings)
    {
-      if (s == 0 || m_count >= m_capacity) return false;
-      if (strcmp(s, "NA") == 0 || strcmp(s, "na") == 0 || strcmp(s, "NULL") == 0 || strcmp(s, "null") == 0)
+      if (m_count >= m_capacity) return false;
+      if (nastrings.isNA(s))
+      {
          SET_STRING_ELT(m_data, m_count++, NA_STRING);
-      else if (s == 0 || *s == '\0')
-         SET_STRING_ELT(m_data, m_count++, NA_STRING);
-      else
-         SET_STRING_ELT(m_data, m_count++, mkChar(s));
+         return false;
+      }
+      SET_STRING_ELT(m_data, m_count++, mkChar(s));
       return true;
    }
    /// Returns the size of the collection.
@@ -144,14 +184,14 @@ public:
       m_data.attach(length(rvec), INTEGER(rvec));
    }
    /// Parse and append an element to the collection. Returns false if there was a parse error.
-   virtual bool append(const char* s)
+   virtual bool append(const char* s, const CMRNAStrings& nastrings)
    {
       if (s == 0 || *s == '\0')
       {
          m_data.push_back(NA_INTEGER);
          return false;
       }
-      if (strcmp(s, "NA") == 0 || strcmp(s, "na") == 0 || strcmp(s, "NULL") == 0 || strcmp(s, "null") == 0)
+      if (nastrings.isNA(s))
       {
          m_data.push_back(NA_INTEGER);
          return false;
@@ -213,18 +253,15 @@ public:
       m_data.attach(length(rvec), REAL(rvec));
    }
    /// Parse and append an element to the collection. Returns false if there was a parse error.
-   virtual bool append(const char* s)
+   virtual bool append(const char* s, const CMRNAStrings& nastrings)
    {
-      //cout << "Double -->" << s << "<--" << endl; // DEBUG
       if (s == 0 || *s == '\0')
       {
-         //cout << "Double MISSING VALUE" << endl; // DEBUG
          m_data.push_back(NA_REAL);
          return false;
       }
-      if (strcmp(s, "NA") == 0 || strcmp(s, "na") == 0 || strcmp(s, "NULL") == 0 || strcmp(s, "null") == 0)
+      if (nastrings.isNA(s))
       {
-         //cout << "Double NA or NULL" << endl; // DEBUG
          m_data.push_back(NA_REAL);
          return false;
       }
@@ -233,12 +270,10 @@ public:
       double x = strtod(s, &p);
       if (errno == EINVAL || errno == ERANGE)
       {
-         //cout << "Double errno=" << errno << endl; // DEBUG
          m_data.push_back(NA_REAL);
          errno = 0;
          return false;
       }
-      //cout << "Double value -->" << x << "<--" << endl; // DEBUG
       errno = 0;
       return m_data.push_back(x);
    }
@@ -295,14 +330,14 @@ public:
    }
 
    /// Parse and append an element to the collection. Returns false if there was a parse error.
-   virtual bool append(const char* s)
+   virtual bool append(const char* s, const CMRNAStrings& nastrings)
    {
       if (s == 0 || *s == '\0')
       {
          m_data.push_back(NA_LONG.D);
          return false;
       }
-      if (strcmp(s, "NA") == 0 || strcmp(s, "na") == 0 || strcmp(s, "NULL") == 0 || strcmp(s, "null") == 0)
+      if (nastrings.isNA(s))
       {
          m_data.push_back(NA_LONG.D);
          return false;

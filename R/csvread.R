@@ -107,11 +107,12 @@
 #' @seealso \code{\link{int64}} 
 #' @keywords csv comma-separated import text
 csvread <- function(file, coltypes, header, colnames = NULL, nrows = NULL, 
-      verbose = FALSE, delimiter = ",")
+      verbose = FALSE, delimiter = ",", na.strings = c("NA", "na", "NULL", "null", ""))
 {
    if (!is.null(nrows)) nrows <- as.double(nrows)
    return(.Call("readCSV", list(filename=file, coltypes=coltypes, nrows=nrows, header=header, 
-                     colnames=colnames, verbose=verbose, delimiter=delimiter), PACKAGE="csvread"))
+                     colnames=colnames, verbose=verbose, delimiter=delimiter, 
+                     na.strings=na.strings), PACKAGE="csvread"))
 }
 
 #------------------------------------------------------------------------------

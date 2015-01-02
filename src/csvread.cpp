@@ -223,24 +223,6 @@ SEXP readCSV(SEXP rschema)
       istr.close();
    }
 
-   // Count the lines if nrows hasn't been provided.
-
-/*   if (nrows == 0)
-   {
-      if (!hasHeader) getline(istr, buffer);
-      while (istr)
-      {
-         lineCount++;
-         getline(istr, buffer);
-      }
-      //istr.seekg(ios_base::beg); // rewind
-      istr.close();
-      istr.open(filename.c_str());
-      if (hasHeader) getline(istr, buffer);
-      nrows = lineCount - (int) hasHeader;
-      Rprintf("Counted %d rows\n", nrows);
-   }
-*/
    // Figure out column names as follows:
    // - the number of names is the number of types
    // - if there are colnames provided, take that
@@ -359,45 +341,20 @@ SEXP readCSV(SEXP rschema)
    CMLineStream lstr(filename.c_str());
    char* s;
    if (hasHeader) s = lstr.getline();
+   //int ri = 0; // DEBUG
    while ((s = lstr.getline()))
    {
-      //Rprintf("%s\n", s);
-/*      rec = s;
-      for (int i = 0, n = cm::cmMin(ncols, rec.size()); i < n; i++)
-      {
-         lst[i]->append(rec[i]);
-      }
-      */
+      //ri++; // DEBUG
+      //Rprintf("row = %i -->%s\n", ri, s);   // DEBUG
       rec.split(s, lstr.len());
       for (int i = 0, nr = rec.size(); i < ncols; i++)
       {
+         //if (i >= nr) Rprintf("row=%i col=%i nr=%i Empty string\n", ri, i, nr); // DEBUG
+         //else Rprintf("row=%i col=%i nr=%i -->%s<--\n", ri, i, nr, rec.get(i)); // DEBUG
          if (i >= nr) lst[i]->append("");
          else lst[i]->append(rec.get(i));
       }
     }
-/*
-
-   istr.open(filename.c_str());
-   if (hasHeader) getline(istr, buffer);
-   getline(istr, buffer);
-   rec = buffer.c_str();
-   while (istr)
-   {
-      lineCount++;
-      rec = buffer.c_str();
-
-      // TODO: check that record type matches the schema
-
-      for (int i = 0, n = cm::cmMin(ncols, rec.size()); i < n; i++)
-      {
-         lst[i]->append(rec[i]);
-      }
-      //cout << buffer << endl;
-      //cout << rec.size() << " " << rec[0] << " " << rec[3] << endl;
-
-      getline(istr, buffer);
-   }
-*/
 
    // Set the column names
 

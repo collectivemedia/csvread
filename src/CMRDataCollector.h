@@ -92,7 +92,9 @@ public:
    virtual bool append(const char* s)
    {
       if (s == 0 || m_count >= m_capacity) return false;
-      if (strcmp(s, "NULL") == 0)
+      if (strcmp(s, "NA") == 0 || strcmp(s, "na") == 0 || strcmp(s, "NULL") == 0 || strcmp(s, "null") == 0)
+         SET_STRING_ELT(m_data, m_count++, NA_STRING);
+      else if (s == 0 || *s == '\0')
          SET_STRING_ELT(m_data, m_count++, NA_STRING);
       else
          SET_STRING_ELT(m_data, m_count++, mkChar(s));
@@ -149,14 +151,21 @@ public:
          m_data.push_back(NA_INTEGER);
          return false;
       }
+      if (strcmp(s, "NA") == 0 || strcmp(s, "na") == 0 || strcmp(s, "NULL") == 0 || strcmp(s, "null") == 0)
+      {
+         m_data.push_back(NA_INTEGER);
+         return false;
+      }
 
       char* p;
       int n = (int) strtol(s, &p, 10);
       if (errno == EINVAL || errno == ERANGE)
       {
          m_data.push_back(NA_INTEGER);
+         errno = 0;
          return false;
       }
+      errno = 0;
       return m_data.push_back(n);
    }
    /// Returns the size of the collection.
@@ -206,8 +215,16 @@ public:
    /// Parse and append an element to the collection. Returns false if there was a parse error.
    virtual bool append(const char* s)
    {
+      //cout << "Double -->" << s << "<--" << endl; // DEBUG
       if (s == 0 || *s == '\0')
       {
+         //cout << "Double MISSING VALUE" << endl; // DEBUG
+         m_data.push_back(NA_REAL);
+         return false;
+      }
+      if (strcmp(s, "NA") == 0 || strcmp(s, "na") == 0 || strcmp(s, "NULL") == 0 || strcmp(s, "null") == 0)
+      {
+         //cout << "Double NA or NULL" << endl; // DEBUG
          m_data.push_back(NA_REAL);
          return false;
       }
@@ -216,9 +233,13 @@ public:
       double x = strtod(s, &p);
       if (errno == EINVAL || errno == ERANGE)
       {
+         //cout << "Double errno=" << errno << endl; // DEBUG
          m_data.push_back(NA_REAL);
+         errno = 0;
          return false;
       }
+      //cout << "Double value -->" << x << "<--" << endl; // DEBUG
+      errno = 0;
       return m_data.push_back(x);
    }
    /// Returns the size of the collection.
@@ -281,18 +302,25 @@ public:
          m_data.push_back(NA_LONG.D);
          return false;
       }
+      if (strcmp(s, "NA") == 0 || strcmp(s, "na") == 0 || strcmp(s, "NULL") == 0 || strcmp(s, "null") == 0)
+      {
+         m_data.push_back(NA_LONG.D);
+         return false;
+      }
 
       char* p;
       CMInt64 u = strtoll(s, &p, m_base);
       if (errno == EINVAL || errno == ERANGE)
       {
          m_data.push_back(NA_LONG.D);
+         errno = 0;
          return false;
       }
 //      return m_data.push_back(*((double*) &u));
       // assume sizeof(double) >= sizeof(CMInt64)
       double d;
       memcpy(&d, &u, sizeof(u));
+      errno = 0;
       return m_data.push_back(d);
    }
 };

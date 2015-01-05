@@ -125,7 +125,7 @@ format.int64 <- function(x, ...)
 #' @method print int64
 print.int64 <- function(x, ...)
 {
-	print(format(x), ...)
+	print(format(x), quote = FALSE, ...)
 	invisible(x)
 }
 

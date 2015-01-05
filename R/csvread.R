@@ -72,6 +72,7 @@
 #' @param verbose If \code{TRUE} and \code{nrows} is \code{NULL}, the function prints 
 #'        number of lines counted in the file.
 #' @param delimiter A single character delimiter, defalut is \code{","}.
+#' @param na.strings A vector of strings to be considered NA in the input file.
 #' 
 #' @return A data frame containing the data from the CSV file.
 #' @examples
@@ -101,17 +102,35 @@
 #' # [1] "double"
 #' class(frm$COL5)
 #' # [1] "int64"
+#' 
+#' frm <- csvread("inst/10rows_na.csv", 
+#'    coltypes = c("longhex", "string", "double", "integer", "long"), 
+#'    header = FALSE, nrows = 10)
+#' frm
+#' #               COL1       COL2     COL3 COL4 COL5
+#' # 1  11fb89c1558c792 2011-05-06 0.150001 4970 4977
+#' # 2  11fb89c1558c792 2011-05-06 0.150001 4970 4987
+#' # 3  11fb89c1558c792        NA  0.150001   NA 5528
+#' # 4             <NA> 2011-05-06 0.150001 4970 5004
+#' # 5  11fb89c1558c792       <NA> 0.150001 4970 4980
+#' # 6  11fb89c1558c792 2011-05-06       NA 4970 5020
+#' # 7  11fb89c1558c792 2011-05-06 0.150001   NA 5048
+#' # 8  11fb89c1558c792 2011-05-06 0.150001 4970   NA
+#' # 9             <NA> 2011-05-06 0.150001 4970 4971
+#' # 10 11fb89c1558c792 2011-05-06 0.150001 4970   NA
+#' 
 #' }
 #' @name csvread
 #' @title Fast CSV reader with a given set of column types.
 #' @seealso \code{\link{int64}} 
 #' @keywords csv comma-separated import text
 csvread <- function(file, coltypes, header, colnames = NULL, nrows = NULL, 
-      verbose = FALSE, delimiter = ",")
+      verbose = FALSE, delimiter = ",", na.strings = c("NA", "na", "NULL", "null", ""))
 {
    if (!is.null(nrows)) nrows <- as.double(nrows)
    return(.Call("readCSV", list(filename=file, coltypes=coltypes, nrows=nrows, header=header, 
-                     colnames=colnames, verbose=verbose, delimiter=delimiter), PACKAGE="csvread"))
+                     colnames=colnames, verbose=verbose, delimiter=delimiter, 
+                     na.strings=na.strings), PACKAGE="csvread"))
 }
 
 #------------------------------------------------------------------------------
@@ -165,6 +184,30 @@ csvread <- function(file, coltypes, header, colnames = NULL, nrows = NULL,
 #' 
 #' as.character.int64(frm$COL1[1], base = 10)
 #' # [1] "80986298828507026"
+#' 
+#' ###############
+#' # A file with NAs and missing values: note that the in the first column, 
+#' # an empty string in row 9 is not considered NA because na.strings are set to "NA".
+#' # By default, the empty string will be considered NA. Also, in column 2, 
+#' # row 3, the value is " NA " (with spaces), which doesn't match the na.strings value
+#' # and therefore is not considered an NA. 
+#' frm <- csvread(file = "inst/10rows.csv", coltypes = coltypes, header = F, 
+#' 					verbose = T, na.strings = "NA")
+#' # Counted 10 lines.
+#' 
+#' frm
+#' #               COL1       COL2     COL3 COL4 COL5
+#' # 1  11fb89c1558c792 2011-05-06 0.150001 4970 4977
+#' # 2  11fb89c1558c792 2011-05-06 0.150001 4970 4987
+#' # 3  11fb89c1558c792        NA  0.150001   NA 5528
+#' # 4             <NA> 2011-05-06 0.150001 4970 5004
+#' # 5  11fb89c1558c792       <NA> 0.150001 4970 4980
+#' # 6  11fb89c1558c792 2011-05-06       NA 4970 5020
+#' # 7  11fb89c1558c792 2011-05-06 0.150001   NA 5048
+#' # 8  11fb89c1558c792 2011-05-06 0.150001 4970   NA
+#' # 9                  2011-05-06 0.150001 4970 4971
+#' # 10 11fb89c1558c792 2011-05-06 0.150001 4970   NA
+#' 
 #' }
 map.coltypes <- function(file, header, nrows = 100, delimiter = ",")
 {

@@ -1,3 +1,10 @@
+Version 1.2
+* Added a na.strings argument to csvread() with default = c("NA", "na", "NULL", "null", "")
+  Note that empty string always becomes NA for non-strings. 
+* Fixed a bug in treating NAs (reset errno)
+* Fix to include <limits.h> where needed
+* Updated maintainer and copyright
+
 Version 1.1
 * Added int64.rep()
 * Switched to using INT_FAST64_MIN from LLONG_MIN

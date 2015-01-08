@@ -4,9 +4,10 @@
 #
 # Function csvread 
 # 
-# Sergei Izrailev, 2011-2014
+# Sergei Izrailev, 2011-2015
 #-------------------------------------------------------------------------------
 # Copyright 2011-2014 Collective, Inc.
+# Copyright 2015 Jabiru Ventures LLC
 # 
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -77,11 +78,14 @@
 #' @return A data frame containing the data from the CSV file.
 #' @examples
 #' \dontrun{
+#' ## Basic use case when column types are known and there's no missing data.
+#' 
 #' frm <- csvread("inst/10rows.csv", 
-#'    coltypes = c("longhex", "string", "double", "integer", "long"), 
-#'    header = FALSE, nrows = 10)
+#' 	coltypes = c("longhex", "string", "double", "integer", "long"), 
+#' 	header = FALSE)
+#' 
 #' frm
-#' #               COL1       COL2     COL3 COL4 COL5
+#' # COL1       COL2     COL3 COL4 COL5
 #' # 1  11fb89c1558c792 2011-05-06 0.150001 4970 4977
 #' # 2  11fb89c1558c792 2011-05-06 0.150001 4970 4987
 #' # 3  11fb89c1558c792 2011-05-06 0.150001 5200 5528
@@ -102,12 +106,35 @@
 #' # [1] "double"
 #' class(frm$COL5)
 #' # [1] "int64"
+#'
+#' #### Examples with missing data.
+#' 
+#' ## The input file contains values "NA", "NA ", " NA ", "NULL", "na" 
+#' ## and missing fields in various columns.
+#'  
+#' writeLines(scan("inst/10rows_na.csv", "character", sep = "\n"))
+#' # Read 10 items
+#' # 11fb89c1558c792,2011-05-06,0.150001,4970,4977
+#' # 11fb89c1558c792,2011-05-06,0.150001,4970,4987
+#' # 11fb89c1558c792, NA ,0.150001,NA ,5528
+#' # NA,2011-05-06,0.150001,4970,5004
+#' # 11fb89c1558c792,na,0.150001,4970,4980
+#' # 11fb89c1558c792,2011-05-06,NA,4970,5020
+#' # 11fb89c1558c792,2011-05-06,0.150001,NULL,5048
+#' # 11fb89c1558c792,2011-05-06,0.150001,4970,NA
+#' # ,2011-05-06,0.150001,4970,4971
+#' # 11fb89c1558c792,2011-05-06,0.150001,4970,
+#' 
+#' ## By default, all missing fields in this input are handled, except  
+#' ## for the " NA " in a character column COL3, which remains unchanged. 
+#' ## This is the intended behavior, similar to that of read.csv.  
 #' 
 #' frm <- csvread("inst/10rows_na.csv", 
-#'    coltypes = c("longhex", "string", "double", "integer", "long"), 
-#'    header = FALSE, nrows = 10)
+#' 	coltypes = c("longhex", "string", "double", "integer", "long"), 
+#' 	header = FALSE)
+#' 
 #' frm
-#' #               COL1       COL2     COL3 COL4 COL5
+#' # COL1       COL2     COL3 COL4 COL5
 #' # 1  11fb89c1558c792 2011-05-06 0.150001 4970 4977
 #' # 2  11fb89c1558c792 2011-05-06 0.150001 4970 4987
 #' # 3  11fb89c1558c792        NA  0.150001   NA 5528
@@ -115,10 +142,9 @@
 #' # 5  11fb89c1558c792       <NA> 0.150001 4970 4980
 #' # 6  11fb89c1558c792 2011-05-06       NA 4970 5020
 #' # 7  11fb89c1558c792 2011-05-06 0.150001   NA 5048
-#' # 8  11fb89c1558c792 2011-05-06 0.150001 4970   NA
+#' # 8  11fb89c1558c792 2011-05-06 0.150001 4970 <NA>
 #' # 9             <NA> 2011-05-06 0.150001 4970 4971
-#' # 10 11fb89c1558c792 2011-05-06 0.150001 4970   NA
-#' 
+#' # 10 11fb89c1558c792 2011-05-06 0.150001 4970 <NA>
 #' }
 #' @name csvread
 #' @title Fast CSV reader with a given set of column types.
@@ -142,12 +168,22 @@ csvread <- function(file, coltypes, header, colnames = NULL, nrows = NULL,
 #' @rdname csvread
 #' @examples
 #' \dontrun{
+#' #### The column types can be guessed by using map.coltypes.
+#' 
 #' coltypes <- map.coltypes("inst/10rows.csv", header = FALSE)
 #' coltypes
 #' #       V1        V2        V3        V4        V5 
 #' # "string"  "string"  "double" "integer" "integer"  
 #' 
-#' frm <- csvread(file = "inst/10rows.csv", coltypes = coltypes, header = F, verbose = T)
+#' ## Note the difference when "NA"s are present in an integer column 4,
+#' ## which is then considered to be a string column.
+#' coltypes.na <- map.coltypes("inst/10rows_na.csv", header = FALSE)
+#' coltypes.na
+#' #        V1        V2        V3        V4        V5 
+#' #  "string"  "string"  "double"  "string" "integer" 
+#' 
+#' frm <- csvread(file = "inst/10rows.csv", coltypes = coltypes, 
+#'    header = F, verbose = T)
 #' # Counted 10 lines.
 #' 
 #' frm
@@ -172,6 +208,8 @@ csvread <- function(file, coltypes, header, colnames = NULL, nrows = NULL,
 #' class(frm$COL5)
 #' # [1] "integer"
 #' 
+#' ## Convert the first column to int64 manually
+#' 
 #' frm$COL1 <- as.int64(frm$COL1, base = 16)
 #' frm$COL1
 #' # [1] "11fb89c1558c792" "11fb89c1558c792" "11fb89c1558c792" "11fb89c1558c792"
@@ -182,17 +220,25 @@ csvread <- function(file, coltypes, header, colnames = NULL, nrows = NULL,
 #' class(frm$COL1)
 #' # [1] "int64"
 #' 
+#' ## Print the first value in base 10.
 #' as.character.int64(frm$COL1[1], base = 10)
 #' # [1] "80986298828507026"
 #' 
-#' ###############
-#' # A file with NAs and missing values: note that the in the first column, 
-#' # an empty string in row 9 is not considered NA because na.strings are set to "NA".
-#' # By default, the empty string will be considered NA. Also, in column 2, 
-#' # row 3, the value is " NA " (with spaces), which doesn't match the na.strings value
-#' # and therefore is not considered an NA. 
-#' frm <- csvread(file = "inst/10rows.csv", coltypes = coltypes, header = F, 
-#' 					verbose = T, na.strings = "NA")
+#' #### Character (string) columns with NAs and non-default na.strings
+#' 
+#' ## A file with NAs and missing values: note that the in the first 
+#' ## column, an empty string in row 9 is not considered NA because 
+#' ## na.strings are set to "NA". By default, the empty string will be 
+#' ## considered NA. Also, in column 2, rows 3 and 5, the values are 
+#' ## " NA " (with spaces) and "na", respectively, because they don't 
+#' ## match values in na.strings and therefore are not considered to be NA. 
+#' 
+#' coltypes
+#' #       V1        V2        V3        V4        V5 
+#' # "string"  "string"  "double" "integer" "integer"  
+#' 
+#' frm <- csvread(file = "inst/10rows_na.csv", coltypes = coltypes, 
+#'    header = F, verbose = T, na.strings = "NA")
 #' # Counted 10 lines.
 #' 
 #' frm
@@ -201,7 +247,7 @@ csvread <- function(file, coltypes, header, colnames = NULL, nrows = NULL,
 #' # 2  11fb89c1558c792 2011-05-06 0.150001 4970 4987
 #' # 3  11fb89c1558c792        NA  0.150001   NA 5528
 #' # 4             <NA> 2011-05-06 0.150001 4970 5004
-#' # 5  11fb89c1558c792       <NA> 0.150001 4970 4980
+#' # 5  11fb89c1558c792         na 0.150001 4970 4980
 #' # 6  11fb89c1558c792 2011-05-06       NA 4970 5020
 #' # 7  11fb89c1558c792 2011-05-06 0.150001   NA 5048
 #' # 8  11fb89c1558c792 2011-05-06 0.150001 4970   NA

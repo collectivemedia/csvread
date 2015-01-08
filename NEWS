@@ -1,4 +1,5 @@
 Version 1.2
+* Added examples in documentation handling NAs and map.coltypes.
 * Added a na.strings argument to csvread() with default = c("NA", "na", "NULL", "null", "")
   Note that empty string always becomes NA for non-strings. 
 * Fixed a bug in treating NAs (reset errno)

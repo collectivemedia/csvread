@@ -4,9 +4,10 @@
 //
 // Definitions for the int64 S3 class in R.
 //
-// Sergei Izrailev, 2011-2014
+// Sergei Izrailev, 2011-2015
 //-------------------------------------------------------------------------------
 // Copyright 2011-2014 Collective, Inc.
+// Copyright 2015 Jabiru Ventures LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -37,6 +38,8 @@ typedef int_fast64_t CMInt64;
 // Changing to INT_FAST64_MIN in the hopes that it works, but with no way to test it.
 //static const union CMRLongNA { CMInt64 L; double D; } NA_LONG = { LLONG_MIN };
 
+// csvread 1.2: R 3.1.2 on Mavericks produces a warning that INT_FAST64_MIN is a LL number
+// Switching to a hex representation from LL.
 //#ifdef INT_FAST64_MIN
 //static const union CMRLongNA { CMInt64 L; double D; } NA_LONG = { INT_FAST64_MIN };
 //#else

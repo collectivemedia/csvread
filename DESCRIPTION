@@ -1,5 +1,5 @@
 Package: csvread
-Title: Fast Specialized CSV File Loader.
+Title: Fast Specialized CSV File Loader
 Version: 1.2
 Author: Sergei Izrailev
 Maintainer: Sergei Izrailev <sizrailev@jabiruventures.com>

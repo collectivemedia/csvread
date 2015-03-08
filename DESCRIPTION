@@ -3,7 +3,7 @@ Title: Fast Specialized CSV File Loader
 Version: 1.2
 Author: Sergei Izrailev
 Maintainer: Sergei Izrailev <sizrailev@jabiruventures.com>
-Description: This package provides functions for loading large (10M+ lines) CSV
+Description: Functions for loading large (10M+ lines) CSV
     and other delimited files, similar to read.csv, but typically faster and
     using less memory than the standard R loader. While not entirely general,
     it covers many common use cases when the types of columns in the CSV file

@@ -21,3 +21,4 @@ Enhances: bit64
 License: Apache License (== 2.0)
 Copyright: Copyright (C) Collective, Inc. | file inst/COPYRIGHTS
 LazyData: true
+RoxygenNote: 6.1.1

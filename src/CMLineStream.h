@@ -88,10 +88,10 @@ protected:
    }
 public:
    /// Creates the object and attaches is to the file if provided.
-   CMLineStream(const char* filename = 0) 
+   CMLineStream(const char* filename = 0)
    {
       clear();
-      if (filename) 
+      if (filename)
       {
          m_filename = filename;
          m_istr.open(filename);

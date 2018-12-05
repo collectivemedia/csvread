@@ -197,7 +197,7 @@ Ops.int64 <- function(e1, e2)
 
 #-------------------------------------------------------------------------------
 
-#' @S3method [ int64
+#' @export
 `[.int64` <- function(x, ..., drop = TRUE)
 {
 	cl <- oldClass(x)
@@ -209,7 +209,7 @@ Ops.int64 <- function(e1, e2)
 
 #-------------------------------------------------------------------------------
 
-#' @S3method [[ int64
+#' @export
 `[[.int64` <- function(x, ..., drop = TRUE)
 {
 	cl <- oldClass(x)
@@ -221,7 +221,7 @@ Ops.int64 <- function(e1, e2)
 
 #-------------------------------------------------------------------------------
 
-#' @S3method [<- int64
+#' @export
 `[<-.int64` <- function(x, ..., value)
 {
 	if (!length(value)) return(x)

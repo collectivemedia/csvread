@@ -60,7 +60,7 @@
 #' \item \code{integer64} - same as \code{long} but produces a column of class \code{integer64},
 #'          which should be compatible with package \code{bit64} (untested).
 #' \item \code{verbose} - if \code{TRUE}, the function prints number of lines counted in the file.
-#' \item \code{delimiter} - a single character delimiter, defalut is \code{","}.
+#' \item \code{delimiter} - a single character delimiter, default is \code{","}.
 #' }
 #' @param header TRUE (default) or FALSE; indicates whether the file has a header
 #'        and serves as the source of column names if \code{colnames} is not provided.
@@ -72,7 +72,7 @@
 #'        used to read only the first lines of the CSV file.
 #' @param verbose If \code{TRUE} and \code{nrows} is \code{NULL}, the function prints
 #'        number of lines counted in the file.
-#' @param delimiter A single character delimiter, defalut is \code{","}.
+#' @param delimiter A single character delimiter, default is \code{","}.
 #' @param na.strings A vector of strings to be considered NA in the input file.
 #'
 #' @return A data frame containing the data from the CSV file.

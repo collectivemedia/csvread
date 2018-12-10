@@ -1,7 +1,10 @@
+Version 1.2.1
+* Fixed NOTES to comply with the latest R version
+
 Version 1.2
 * Added examples in documentation handling NAs and map.coltypes.
 * Added a na.strings argument to csvread() with default = c("NA", "na", "NULL", "null", "")
-  Note that empty string always becomes NA for non-strings. 
+  Note that empty string always becomes NA for non-strings.
 * Fixed a bug in treating NAs (reset errno)
 * Fix to include <limits.h> where needed
 * Updated maintainer and copyright
@@ -12,4 +15,4 @@ Version 1.1
 * Reduced the required R version to 2.15
 
 Version 1.0
-* First public release. 
+* First public release.

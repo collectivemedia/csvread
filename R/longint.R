@@ -1,19 +1,20 @@
 #-------------------------------------------------------------------------------
 #
-# Package csvread 
+# Package csvread
 #
-# int64 class - not all numeric functionality is implemented.  
-# 
-# Sergei Izrailev, 2011-2014
+# int64 class - not all numeric functionality is implemented.
+#
+# Sergei Izrailev, 2011-2018
 #-------------------------------------------------------------------------------
 # Copyright 2011-2014 Collective, Inc.
-# 
+# Copyright 2015, 2018 Jabiru Ventures LLC
+#
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
-# 
+#
 # http://www.apache.org/licenses/LICENSE-2.0
-# 
+#
 # Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS" BASIS,
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -21,20 +22,20 @@
 # limitations under the License.
 #-------------------------------------------------------------------------------
 
-#' A very basic 64-bit integer class. 
-#' 
-#' The \code{int64} class stores 64-bit integers in vectors of doubles and the 
+#' A very basic 64-bit integer class.
+#'
+#' The \code{int64} class stores 64-bit integers in vectors of doubles and the
 #' base as an attribute \code{base} of the vector for printing and conversion to
 #' character. The motivation behind this class is to give R the ability to load
 #' 64-bit integers directly, for example, to represent the commonly used 64-bit
 #' identifiers in relational and other databases.
 #' @name int64
-#' @title A very basic 64-bit integer class. 
-#' @aliases int64 as.int64 as.int64.default as.int64.factor as.int64.character 
+#' @title A very basic 64-bit integer class.
+#' @aliases int64 as.int64 as.int64.default as.int64.factor as.int64.character
 #'          as.int64.numeric as.int64.NULL [.int64 [[.int64 [<-.int64
 #' @param x Object to be coerced or tested
-#' @param length A non-negative integer specifying the desired length.  
-#'          Double values will be coerced to integer: supplying an argument of 
+#' @param length A non-negative integer specifying the desired length.
+#'          Double values will be coerced to integer: supplying an argument of
 #'          length other than one is an error.
 #' @param ... Further arguments passed to or from other methods.
 #' @seealso Ops.int64 csvread
@@ -101,7 +102,7 @@ as.int64.numeric <- function(x, ...)
 #' @rdname int64
 #' @export
 #' @method as.int64 NULL
-as.int64.NULL <- function(x, ...) 
+as.int64.NULL <- function(x, ...)
 {
    res <- double()
    class(res) <- "int64"
@@ -132,14 +133,14 @@ print.int64 <- function(x, ...)
 #-------------------------------------------------------------------------------
 
 #' Operators for the \code{int64} class.
-#' 
-#' Operators for the \code{int64} class: one of 
+#'
+#' Operators for the \code{int64} class: one of
 #' \code{+}, \code{-}, \code{==}, \code{!=}, \code{<}, \code{<=}, \code{>} or \code{>=}.
 #' @rdname Ops.int64
 #' @aliases + - <
-#' @param e1 int64 object, character vector or numeric vector 
+#' @param e1 int64 object, character vector or numeric vector
 #'        (character and numeric values are converted by \code{as.int64}).
-#' @param e2 int64 object, character vector or numeric vector 
+#' @param e2 int64 object, character vector or numeric vector
 #'        (character and numeric values are converted by \code{as.int64}).
 #' @usage e1 + e2
 #' e1 - e2
@@ -168,7 +169,7 @@ Ops.int64 <- function(e1, e2)
 #' @export
 #' @method + int64
 `+.int64` <- function(e1, e2)
-{	
+{
 	if (nargs() == 1) return(e1)
 	if (inherits(e1, "int64") && inherits(e2, "int64"))
    {
@@ -196,6 +197,7 @@ Ops.int64 <- function(e1, e2)
 
 #-------------------------------------------------------------------------------
 
+#' @export
 `[.int64` <- function(x, ..., drop = TRUE)
 {
 	cl <- oldClass(x)
@@ -207,6 +209,7 @@ Ops.int64 <- function(e1, e2)
 
 #-------------------------------------------------------------------------------
 
+#' @export
 `[[.int64` <- function(x, ..., drop = TRUE)
 {
 	cl <- oldClass(x)
@@ -218,6 +221,7 @@ Ops.int64 <- function(e1, e2)
 
 #-------------------------------------------------------------------------------
 
+#' @export
 `[<-.int64` <- function(x, ..., value)
 {
 	if (!length(value)) return(x)

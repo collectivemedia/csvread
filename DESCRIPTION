@@ -1,6 +1,6 @@
 Package: csvread
 Title: Fast Specialized CSV File Loader
-Version: 1.2.1
+Version: 1.2.2
 Author: Sergei Izrailev
 Maintainer: Sergei Izrailev <sizrailev@jabiruventures.com>
 Description: Functions for loading large (10M+ lines) CSV
@@ -13,7 +13,7 @@ Description: Functions for loading large (10M+ lines) CSV
     databases. The CSV file loader supports common column types including
     'integer', 'double', 'string', and 'int64', leaving further type
     transformations  to the user.
-URL: http://github.com/jabiru/csvread
+URL: https://github.com/jabiru/csvread
 Depends:
     R (>= 2.15),
     methods
@@ -22,5 +22,4 @@ License: Apache License (== 2.0)
 Copyright: Copyright (C) Collective, Inc. | file inst/COPYRIGHTS
 Language: en-US
 Encoding: UTF-8
-LazyData: true
-RoxygenNote: 6.1.1
+RoxygenNote: 7.2.3

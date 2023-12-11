@@ -184,7 +184,7 @@ SEXP int64ToHex(SEXP rinp)
       }
       else
       {
-         if (xi < 0) error("Can't convert a negative number %lld to hex format, item %d.", x[i], i + 1);
+         if (xi < 0) error("Can't convert a negative number %lld to hex format, item %d.", xi, i + 1);
 //         sprintf(s, "%llx", xi);
          SET_STRING_ELT(res, i, mkChar(cm_lltoa(xi, s, 16)));
       }

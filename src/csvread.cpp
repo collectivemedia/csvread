@@ -193,7 +193,6 @@ SEXP readCSV(SEXP rschema)
    string buffer;
    SfiDelimitedRecordSTD rec(0, delim);
    vector<string> headers;
-   int lineCount = 0;
    if (hasHeader)
    {
       getline(istr, buffer);
@@ -202,7 +201,6 @@ SEXP readCSV(SEXP rschema)
       {
          headers.push_back(rec[i]);
       }
-      lineCount++;
    }
    istr.close();
 

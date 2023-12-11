@@ -11,6 +11,10 @@
 *.o
 *.obj
 *.so
+symbols.rds
+
+# PyCharm
+.idea
 
 .DS_Store
 

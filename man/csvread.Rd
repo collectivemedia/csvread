@@ -3,13 +3,19 @@
 \docType{package}
 \name{csvread}
 \alias{csvread}
-\alias{csvread-package}
 \alias{map.coltypes}
 \title{Fast Specialized CSV File Loader.}
 \usage{
-csvread(file, coltypes, header, colnames = NULL, nrows = NULL,
-  verbose = FALSE, delimiter = ",", na.strings = c("NA", "na",
-  "NULL", "null", ""))
+csvread(
+  file,
+  coltypes,
+  header,
+  colnames = NULL,
+  nrows = NULL,
+  verbose = FALSE,
+  delimiter = ",",
+  na.strings = c("NA", "na", "NULL", "null", "")
+)
 
 map.coltypes(file, header, nrows = 100, delimiter = ",")
 }
@@ -141,7 +147,7 @@ class(frm$COL5)
 ## The input file contains values "NA", "NA ", " NA ", "NULL", "na"
 ## and missing fields in various columns.
 
-writeLines(scan("inst/10rows_na.csv", "character", sep = "\\n"))
+writeLines(scan("inst/10rows_na.csv", "character", sep = "\n"))
 # Read 10 items
 # 11fb89c1558c792,2011-05-06,0.150001,4970,4977
 # 11fb89c1558c792,2011-05-06,0.150001,4970,4987

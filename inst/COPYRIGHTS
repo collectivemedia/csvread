@@ -1,9 +1,9 @@
 #-------------------------------------------------------------------------------
-# CSVREAD 
+# CSVREAD
 #-------------------------------------------------------------------------------
 
 Copyright (C) 2011-2014 Collective, Inc.
-Portions of the code are Copyright (C) 2015, 2018 Jabiru Ventures LLC
+Portions of the code are Copyright (C) 2015, 2018, 2023 Jabiru Ventures LLC
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -16,12 +16,12 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-   
+
 #-------------------------------------------------------------------------------
 # Attribution notices:
 #-------------------------------------------------------------------------------
 
-Files SfiDelimitedRecordSTD.h and SfiVectorLite.h come from 
+Files SfiDelimitedRecordSTD.h and SfiVectorLite.h come from
 https://github.com/jabiru/sficl under the following license:
 
 The MIT License (MIT)
@@ -45,6 +45,6 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
- 
+
 #-------------------------------------------------------------------------------
 

@@ -37,7 +37,7 @@ is.int64(x)
 
 \method{as.int64}{numeric}(x, ...)
 
-\method{as.int64}{NULL}(x, ...)
+\method{as.int64}{`NULL`}(x, ...)
 
 \method{format}{int64}(x, ...)
 
